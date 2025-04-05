@@ -1,0 +1,35 @@
+﻿@model Nop.Plugin.Hoho.ExternalAPIs.Model.ApiKeyModel
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="content-header clearfix">
+    <h1>Create API Key</h1>
+</div>
+
+<section class="content">
+    <form asp-action="Create" method="post">
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+        </div>
+        <div class="form-group">
+            <label asp-for="IsEnabled"></label>
+            <input asp-for="IsEnabled" type="checkbox" class="form-check-input" />
+        </div>
+        <div class="form-group">
+            <label asp-for="ApiKey"></label>
+            <input asp-for="ApiKey" class="form-check-input" />
+        </div>
+        <div class="form-group">
+            <label asp-for="ExpirationDateUtc"></label>
+            <input asp-for="ExpirationDateUtc" class="form-control" type="datetime-local" />
+        </div>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+</section>

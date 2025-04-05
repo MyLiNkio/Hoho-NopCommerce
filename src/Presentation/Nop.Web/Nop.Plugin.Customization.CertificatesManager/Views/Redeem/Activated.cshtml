@@ -1,0 +1,160 @@
+﻿@using Nop.Core.Domain.Catalog
+@using Nop.Web.Components
+@*//MoveRedeem*@
+@model RedeemCertificateModel
+
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.Redeem.Activated").Text);
+
+    //page class
+    NopHtml.AppendPageCssClassParts("html-activate-certificate-page");
+
+    var isError = !Model.OrderItems.Any() || !Model.OrderItemId.HasValue;
+    RedeemOrderItemModel item = null;
+    if (!isError)
+    {
+        item = Model.OrderItems.FirstOrDefault(x => x.OrderItemId == Model.OrderItemId.Value);
+        isError = item == null;
+    }
+
+    if (isError)
+        throw new Exception($"Activate.cshtml has and orderItemError for certificate: {Model.CertificateNumber}, validationToken: {Model.ValidationToken}");
+
+    var picture = item?.PictureModels.FirstOrDefault();
+}
+
+<div class="page">
+    <div class="page-up-margin">
+        <div class="page-title title">
+            <h1>@T("Redeem.Activated.PageTitle")</h1>
+        </div>
+
+        <div class="page-body activated">
+            <div class="status-block">
+                <p>
+                    <span>@T("Redeem.Fields.CardNumber"):</span>
+                    <span class="bold">@Model.CertificateNumber</span>
+                </p>
+
+                @if (Model.Status == CertificateDisplayStatus.Activated)
+                {
+                    <p>
+                        <span>@T("Redeem.Activated.Status"):</span>
+                        <span class="valid-status bold">@T("Redeem.Activated.StatusValid")</span>
+                    </p>
+                    <p class="details">@T("Redeem.Activated.RedeemTill", ((DateTime)Model.ValidationDate).ToString("dd/MM/yyyy"))</p>
+                }
+                @if (Model.Status == CertificateDisplayStatus.Redeemed)
+                {
+                    <p>
+                        <span>@T("Redeem.Activated.Status"):</span>
+                        <span class="invalid-status bold">@T("Redeem.Activated.StatusRedeemed")</span>
+                    </p>
+                    <p class="details">@T("Redeem.Check.CardRedeemed", Model.ValidationDate.Value.ToShortDateString())</p>
+                }
+                <p>
+                    @T("Redeem.Activated.Service")
+                </p>
+            </div>
+            <div class="service-info">
+                
+                <ul class="redeem-activities-list">
+                    <li class="redeem-activity-item" data-step-2="" data-item-id="@item.OrderItemId" data-item-SKU="@item.Sku">
+                        <div class="redeem-item-container">
+                            <div class="redeem-item-top">
+                                <a href="@(Url.RouteUrl<Product>(new { SeName = item.SeName }))" title="@picture?.Title">
+                                    <img class="owl-lazy" alt="@picture?.AlternateText" src="@picture?.ImageUrl" title="@picture?.Title" />
+                                </a>
+
+                                <a href="@(Url.RouteUrl<Product>(new { SeName = item.SeName }))">
+                                    <h3> @item.Name</h3>
+                                </a>
+                                @await Component.InvokeAsync(typeof(DisplayServiceLanguageViewComponent), new { specifications = item.ProductSpecificationModel })
+                                <p class="activity-item-descr">@Html.Raw(item.ShortDescription)</p>
+                            </div>
+                            <div class="redeem-item-bottom">
+                                @if (item.ProductAttributes != null)
+                                {
+                                    foreach (var pAttribute in item.ProductAttributes)
+                                    {
+                                        if (pAttribute.Values?.Count > 0)
+                                        {
+                                            var preselectedItems = pAttribute.Values.Where(x => x.IsPreSelected).ToList();
+                                            var counter = 0;
+                                            if (preselectedItems.Count == 0) { continue; }
+
+                                            <p class="pAtribute">
+                                                <span class="aName">
+                                                    @Html.Raw(string.IsNullOrEmpty(pAttribute.TextPrompt) ? pAttribute.Name : pAttribute.TextPrompt):
+                                                </span>
+                                                @foreach (var preselcted in preselectedItems)
+                                                {
+                                                    string value = preselcted.Name;
+                                                    if (++counter < preselectedItems.Count)
+                                                    {
+                                                        value += ", ";
+                                                    }
+                                                    <span>@value</span>
+                                                }
+                                            </p>
+                                        }
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </li>
+                    <li class="redeem-activity-item" style="opacity: 0;">
+                        <div class="info-choose">
+                            <ul>
+                                <li>
+                                    <span class="info-choose__check"></span>
+                                    <p>@T("Redeem.Activate.FillOut")</p>
+                                </li>
+                                <li>
+                                    <span class="info-choose__check"></span>
+                                    <p>@T("Redeem.Activate.FillDate")</p>
+                                </li>
+                                <li>
+                                    <span class="info-choose__check"></span>
+                                    <p>@T("Redeem.Activate.ManagerCall")</p>
+                                </li>
+                            </ul>
+                            <div class="info-choose-bottom">
+                                <p><span class="highlight">@T("Redeem.Activate.WeBook")</span></p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                
+                <script asp-location="Footer">
+                    $(document).ready(function () {
+
+                        // Function to equalize the heights of images
+                        function equalizeImageHeights() {
+                            let width = $('.redeem-activity-item .owl-lazy').last().width();
+
+                                                //modify images to 4:3 aspect ratio
+                            if (width) {
+                                $('.redeem-activity-item .owl-lazy').each(function () {
+                                    var heightToSet = Math.round(width / 4) * 3;
+                                    $(this).css('height', heightToSet + 'px'); // Set the new height
+                                });
+                            }
+                                            }
+
+                        // Run the function when the document is ready
+                                            equalizeImageHeights();
+
+                        // Run the function when the window is resized
+                        $(window).resize(function () {
+                            equalizeImageHeights();
+                                            });
+                                        });
+                </script>
+            </div>
+        </div>
+    </div>
+</div>

@@ -23,6 +23,12 @@
             @T("Admin.Common.AddNew")
         </a>
         @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.DiscountListButtons, additionalData = Model })
+        
+        @*HOHOImprove*@
+        <a asp-action="CreateBatch" class="btn btn-primary">
+            <i class="fas fa-plus-square"></i>
+            Create Batch
+        </a>
     </div>
 </div>
 

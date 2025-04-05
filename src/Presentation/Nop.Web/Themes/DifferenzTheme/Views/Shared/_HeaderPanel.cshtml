@@ -1,0 +1,91 @@
+﻿@using Nop.Core.Domain.Topics;
+@using Nop.Web.Factories;
+@inject ICatalogModelFactory _catalogModelFactory
+
+@{
+    var topMenuModel = await _catalogModelFactory.PrepareTopMenuModelAsync();
+}
+
+
+<div class="header header-wrapper">
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderBefore })
+
+    <div class="header-main">
+        <div class="header-in">
+            <div class="header-logo flx--fix-size">
+                @await Component.InvokeAsync(typeof(LogoViewComponent))
+            </div>
+
+            <div class="nav-bar">
+                @*Gift catalog button*@
+                @foreach(var category in topMenuModel.Categories)
+                {
+                    <div class="nav-gifcatalog-btn dd-element flx--fix-size hide-max-1024">
+                        <a href="@Url.RouteUrl("Category", new { SeName = category.SeName })">
+                            <div class="dd-element__btn flx--row flx--align--center">
+                                <div class="dd-menu-btn-dots">
+                                    <span class="dd-menu-btn-dots__span"></span>
+                                    <span class="dd-menu-btn-dots__span"></span>
+                                    <span class="dd-menu-btn-dots__span"></span>
+                                    <span class="dd-menu-btn-dots__span"></span>
+                                    <span class="dd-menu-btn-dots__span"></span>
+                                    <span class="dd-menu-btn-dots__span"></span>
+                                    <span class="dd-menu-btn-dots__span"></span>
+                                    <span class="dd-menu-btn-dots__span"></span>
+                                    <span class="dd-menu-btn-dots__span"></span>
+                                </div>
+                                <span>@T("HeaderPanel.GiftCatalog.Btn")</span>
+                                <span class="dd-element__btn-arrow"></span>
+                            </div>
+                        </a>
+                        <div class="dd-element__content">
+                            @await Html.PartialAsync("~/Customization/Views/Shared/_CatalogDDButton.cshtml", topMenuModel)
+                        </div>
+                    </div>
+                }
+
+                @*Menu button*@
+                @await Html.PartialAsync("_SideMenuPanel")
+
+                @*Topic links collapsed into Information button*@
+                <div class="nav-info-module dd-element hide-min-1401 hide-max-1024">
+                    <div class="dd-element__btn">
+                        <span>@T("HeaderPanel.InfoModule.Btn")</span>
+                        <span class="dd-element__btn-arrow"></span>
+                    </div>
+
+                    <div class="dd-element__content">
+                        <ul>
+                            @foreach (var topic in topMenuModel.Topics)
+                            {
+                                <li><a href="@(Url.RouteUrl<Topic>(new { SeName = topic.SeName }))">@topic.Name</a></li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+
+                @*Topic links navigation panel*@
+                <div class="head-topics hide-max-1400">
+                    <ul>
+                        @foreach (var topic in topMenuModel.Topics)
+                        {
+                            <li><a href="@(Url.RouteUrl<Topic>(new { SeName = topic.SeName }))">@topic.Name</a></li>
+                        }
+                    </ul>
+                </div>
+
+            </div>
+
+            @await Component.InvokeAsync(typeof(HeaderLinksViewComponent))
+        </div>
+    </div>
+
+</div>
+
+
+@{
+    var themeName = await themeContext.GetWorkingThemeNameAsync();
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, $"~/Themes/{themeName}/Content/js/Head.js");
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, $"~/Themes/{themeName}/Content/js/owl.carousel.min.js");
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, $"~/Themes/{themeName}/Content/js/_header.js");
+}

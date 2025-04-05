@@ -1,0 +1,54 @@
+﻿@model IList<CategoryModel>
+@if (Model.Count > 0)
+{
+
+    <div class="title">
+        <h1>@T("HohoCustomization.Home.ChooseWhoGets.Title")</h1>
+        @*<p class="mb-0">@T("HohoCustomization.Home.ChooseWhoGets.Description")</p>*@
+    </div>
+    <div class="cat-slider category-grid home-page-category-grid">
+        <div class="owl-carousel owl-carousel4 owl-theme">
+            @foreach (var item in Model)
+            {
+                <div class="cat-slider__item">
+                    <a href="@Url.RouteUrl("Category", new { SeName = item.SeName })" class="cat-wrapper category-item">
+                        @*<span class="nav-categories__count tag tag_count">Более 10 предложений</span>*@
+                        <div class="cat-wrapper__photo">
+                            @*<div class="owl-lazy cat-wrapper__shadow" data-src="@item.PictureModel.ImageUrl" data-src-retina="@item.PictureModel.ImageUrl" style="background-image: url(@item.PictureModel.ImageUrl);"></div>*@
+                            <div class="cat-wrapper__photo-wrap">
+                                @*<img src="/interface/d121a7e1ba690c00b5b27169c6e8f3cd.png" data-src="/interface/d121a7e1ba690c00b5b27169c6e8f3cd.png" alt="Отдых и отели" class="nav-categories__img v-lazy entered v-loaded" data-ll-status="loaded">*@
+
+                                <img class="owl-lazy" alt="@item.PictureModel.AlternateText" data-src="@item.PictureModel.ImageUrl" data-src-retina="@item.PictureModel.ImageUrl" title="@item.PictureModel.Title" />
+                            </div>
+                        </div>
+                        <h4 class="cat-wrapper__name">
+                            @item.Name
+                        </h4>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+
+    @*<div class="category-grid home-page-category-grid">
+        <div class="item-grid">
+            @foreach (var item in Model)
+            {
+                <div class="item-box">
+                    <div class="category-item">
+                        <h2 class="title">
+                            <a href="@Url.RouteUrl("Category", new { SeName = item.SeName })" title="@item.PictureModel.Title">
+                                @item.Name
+                            </a>
+                        </h2>
+                        <div class="picture">
+                            <a href="@Url.RouteUrl("Category", new { SeName = item.SeName })" title="@item.PictureModel.Title">
+                                <img alt="@item.PictureModel.AlternateText" src="@item.PictureModel.ImageUrl" title="@item.PictureModel.Title" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>*@
+}

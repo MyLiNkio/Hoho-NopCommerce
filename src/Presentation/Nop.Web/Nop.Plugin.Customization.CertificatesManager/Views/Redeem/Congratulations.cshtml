@@ -1,0 +1,30 @@
+﻿@*//MoveRedeem*@
+
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.Redeem.Activated").Text);
+
+    //page class
+    NopHtml.AppendPageCssClassParts("html-redeem-congratulation-page");
+}
+
+<div class="page activation-page">
+    <div class="page-up-margin">
+        <div class="page-title title">
+            <h1>@T("Redeem.Congratulations.PageTitle")</h1>
+        </div>
+
+        <div class="page-body">
+            <div class="congrat-summary">
+                <div class="congrat-message">@T("Redeem.Activated.Success")</div>
+                <div class="congrat-calltoaction">
+                    <div>@T("Redeem.Congratulations.Wishes")</div>
+                    <div>@T("Redeem.Congratulations.LeaveFeadback")</div>
+                </div>
+                <button onclick="window.location.href='@Url.RouteUrl("Homepage")'">@T("Redeem.Congratulations.Okay")</button>
+            </div>
+        </div>
+    </div>
+</div>

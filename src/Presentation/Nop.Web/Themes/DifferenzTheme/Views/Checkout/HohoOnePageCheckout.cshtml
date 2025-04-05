@@ -1,0 +1,130 @@
+﻿@model HohoOnePageCheckoutModel
+@using System.Text.Json
+@using Nop.Core
+@using Nop.Services.Customers
+@inject IWebHelper webHelper
+@inject IWorkContext workContext
+@inject ICustomerService _customerService
+@{
+    Layout = "_ColumnsOne";
+
+    var storeLocationUrlBase = $"{webHelper.GetStoreLocation()}checkout";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.Checkout").Text);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-checkout-page");
+
+    NopHtml.AddCssFileParts("~/customization/themes_customization/differenz_theme/css/hoho-checkout-panel.css");
+
+    var themeName = await themeContext.GetWorkingThemeNameAsync();
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, $"~/Themes/{themeName}/Content/js/hoho_onepagecheckout.js");
+
+    var dataDictcheckout = new ViewDataDictionary(ViewData);
+    dataDictcheckout.TemplateInfo.HtmlFieldPrefix = "CheckoutDetails";
+
+    var tabSettings = new Dictionary<int, dynamic> //key - it is a "key" of the step, value - settings of the step.
+    {
+        {1, new { tabTitle=T("CheckoutPanel.Tabs.Packaging").Value, nextButtonText=T("CheckoutPanel.CS.NextBtn").Value, nextStepRequestAction=$"{storeLocationUrlBase}/HohoOpcLoadCustomerInfo" } },
+        {2, new { tabTitle=T("CheckoutPanel.Tabs.Contacts").Value, nextButtonText=T("CheckoutPanel.CS.NextBtn").Value, nextStepRequestAction=$"{storeLocationUrlBase}/HohoOpcLoadDeliveryDetails" } },
+        {3, new { tabTitle=T("CheckoutPanel.Tabs.Delivery").Value, nextButtonText=T("CheckoutPanel.CS.PayBtn").Value, nextStepRequestAction=$"{storeLocationUrlBase}/HohoOpcPayOrder" } },
+        {4, new { tabTitle=T("CheckoutPanel.Tabs.Payment").Value, nextButtonText="", nextStepRequestAction=$"" } },
+    };
+
+    var tabControllerSettings = new
+    {
+        tabSettings = tabSettings,
+        tabsSelector = ".opc-step-tab",
+        contentsSelector = ".opc-step",
+        prevBtnSelector = "#back-action-btn",
+        nextBtnSelector = "#next-action-btn",
+        stepDataSelector = "step-key",//data-step-key="1"
+        summaryContainer = "#checkout-summary-container",
+        warningMessage = "#billing-warning-message",
+        successUrl = $"{webHelper.GetStoreLocation().Trim('/')}{Url.RouteUrl("CheckoutCompleted")}"
+    };
+
+    var cerValueId = "cert-value";
+    var packageCostId = "package-cost";
+    var shippingCostId = "shipping-cost";
+    var totalSumId = "total-sum";
+}
+
+@* <div class="page checkout-page"> *@
+<div>
+    <div class="container">
+        <div class="page-title">
+            <h1>@T("Checkout")</h1>
+        </div>
+        <div class="page-body checkout-data">
+            @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.OpcContentBefore, additionalData = Model })
+
+
+            @* Checkout page content *@
+            <script asp-location="Footer">
+                var settings = @Html.Raw(JsonSerializer.Serialize(tabControllerSettings));
+                var priceDetails = {
+                    certificate: { value: @Model.CertificateNominalPrice, id: '@cerValueId' },
+                    packaging: { value: @Model.PackagingPrice, id: '@packageCostId' },
+                    shipping: { value: @Model.ShippingCost, id: '@shippingCostId' },
+                    total: { value: @Model.TotalSum, id: '@totalSumId' }
+                };
+
+                CheckoutLoaderHelper.init('#opc-select-packaging-form', priceDetails);
+                CheckoutTabsController.init(settings);
+
+            </script>
+
+            <form id="opc-select-packaging-form" action="" method="post">
+                <div class="opc-top-tabs">
+                    @foreach (var item in tabSettings)
+                    {
+                        @* <div class="opc-step-tab" data-step="2"> *@
+                        <div class="opc-step-tab" @($"data-{tabControllerSettings.stepDataSelector}")="@item.Key">
+                            @item.Value.tabTitle
+                        </div>
+                        if (item.Key != tabSettings.Keys.LastOrDefault())
+                        {
+                            <span class="cert-check-tabs__arrow"></span>
+                        }
+                    }
+                </div>
+
+
+                <div class="checkout-panel">
+                    <div class="checkout-container">
+                        @{
+                            var itemCounter = 0;
+                        }
+                        @foreach (var item in tabSettings)
+                        {
+                            @* <div class="opc-step" data-step="1"> *@
+                            <div class="opc-step" @($"data-{tabControllerSettings.stepDataSelector}")="@item.Key">
+                                @if (itemCounter == 0)
+                                {
+                                    @await Html.PartialAsync("HohoOpcSelectPackaging", Model.CheckoutDetails, dataDictcheckout)
+                                    itemCounter++;
+                                }
+                            </div>
+                        }
+                    </div>
+                    <div class="checkout-summary">
+                        <div id="checkout-summary-container">
+                            @await Component.InvokeAsync(typeof(CheckoutOrderTotalsViewComponent))
+                        </div>
+                        <div class="checkout-summary-notification">
+                            <p class="please-wait" id="billing-please-wait" style="display: none;">@T("Common.LoadingNextStep")</p>
+                            <p class="warning-massage" id="billing-warning-message" style="display: none;"></p>
+                        </div>
+                        <div class="buttons" id="billing-buttons-container">
+                            <button id="back-action-btn" type="button" class="button-1 inactive">@T("CheckoutPanel.CS.BackBtn")</button>
+                            <button id="next-action-btn" type="button" class="button-2">@T("CheckoutPanel.CS.NextBtn")</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.OpcContentAfter, additionalData = Model })
+        </div>
+    </div>
+</div>

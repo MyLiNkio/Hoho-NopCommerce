@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33723.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hoho_GE_Partnership", "Hoho_GE_Partnership\Hoho_GE_Partnership.csproj", "{C486236F-4CD6-45A7-8E96-CF02B420DD3E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C486236F-4CD6-45A7-8E96-CF02B420DD3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C486236F-4CD6-45A7-8E96-CF02B420DD3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C486236F-4CD6-45A7-8E96-CF02B420DD3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C486236F-4CD6-45A7-8E96-CF02B420DD3E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D3EE62B1-FDEF-4598-ADA0-16EEBDD9E635}
+	EndGlobalSection
+EndGlobal

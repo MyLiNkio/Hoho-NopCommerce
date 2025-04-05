@@ -1,0 +1,77 @@
+﻿@using Nop.Web.Factories
+@model CatalogProductsModel
+
+@{
+    //current category ID
+    var currentCategoryId = 0;
+    if (Url.ActionContext.RouteData.Values["controller"].ToString().Equals("catalog", StringComparison.InvariantCultureIgnoreCase) &&
+        Url.ActionContext.RouteData.Values["action"].ToString().Equals("category", StringComparison.InvariantCultureIgnoreCase))
+    {
+        currentCategoryId = Convert.ToInt32(Url.ActionContext.RouteData.Values["categoryId"].ToString());
+    }
+
+    //current product ID
+    var currentProductId = 0;
+    if (Url.ActionContext.RouteData.Values["controller"].ToString().Equals("product", StringComparison.InvariantCultureIgnoreCase) &&
+        Url.ActionContext.RouteData.Values["action"].ToString().Equals("productdetails", StringComparison.InvariantCultureIgnoreCase))
+    {
+        currentProductId = Convert.ToInt32(Url.ActionContext.RouteData.Values["productId"].ToString());
+    }
+}
+
+<div class="block product-filters">
+    <div class="close-filters">
+        <span id="svg_icon">@T("Catalog.Filter.Close")</span>
+    </div>
+
+
+    @await Component.InvokeAsync("CategoryNavigation", new { currentCategoryId = currentCategoryId, currentProductId = currentProductId })
+
+
+
+    @if (Model.PriceRangeFilter.Enabled)
+    {
+        @await Html.PartialAsync("_FilterPriceBox", Model.PriceRangeFilter)
+    }
+
+    @if (Model.SpecificationFilter.Enabled)
+    {
+        @await Html.PartialAsync("_FilterSpecsBox", Model.SpecificationFilter)
+    }
+
+    @if (Model.ManufacturerFilter.Enabled)
+    {
+        @await Html.PartialAsync("_FilterManufacturerBox", Model.ManufacturerFilter)
+    }
+</div>
+
+<script asp-location="Footer">
+    $(document).ready(function () {
+        $('.close-filters #svg_icon').on('click', function () {
+            $('.side-2').removeClass('show_filter_bar');            
+        });
+
+        $(document).on('touchstart', function (e) {
+            var sidebar = $('.side-2');
+            if (!sidebar.is(e.target) && sidebar.has(e.target).length === 0) {
+                sidebar.removeClass('show_filter_bar');
+            }
+        });
+    });
+</script>
+
+<script asp-location="Footer">
+    $(document).ready(function () {
+        $('.block .filter-title').on('click', function () {
+            var e = window, a = 'inner';
+            if (!('innerWidth' in window)) {
+                a = 'client';
+                e = document.documentElement || document.body;
+            }
+            var result = { width: e[a + 'Width'], height: e[a + 'Height'] };
+            if (result.width < 1001) {
+                $(this).siblings('.filter-content').slideToggle('slow');
+            }
+        });
+    });
+</script>

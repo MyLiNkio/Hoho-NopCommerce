@@ -1,0 +1,51 @@
+﻿@model IList<ProductOverviewModel>
+
+@using Nop.Web.Factories
+@inject ICatalogModelFactory _catalogModelFactory
+
+@{
+    var categories = await _catalogModelFactory.PrepareCategorySimpleModelsAsync();
+    var goToCatalogUrl = Url.RouteUrl(NopRoutingDefaults.RouteName.Generic.Category, new { SeName = categories[0].SeName });
+}
+
+@if (Model.Count > 0)
+{
+    ViewData["IsSpecial"] = true;
+    <div class="title">
+        @* <h1>@T("Homepage.Products")</h1> *@
+        @* <h1>@T("HohoCustomization.Home.DecideWhatGift.Title")</h1> *@
+        <h1>@T("Hoho.Home.ViewProducts.Title")</h1>
+        <div class="title-content">
+            @* <p class="mb-0">@T("HohoCustomization.Home.DecideWhatGift.Description")</p> *@
+            <p class="mb-0">@T("Hoho.Home.ViewProducts.Description")</p>
+            <button onclick="window.location.href='@goToCatalogUrl'">@T("Hoho.Home.ViewProducts.AllBtn")</button>
+        </div>
+    </div>
+    <div class="product-grid">
+        <div class="owl-carousel owl-carousel2 owl-theme">
+            @foreach (var item in Model)
+            {
+                <div class="item">
+                    @await Html.PartialAsync("_ProductBox", item)
+                </div>
+            }
+            <div class="item">
+                <div class="view-all-container">
+                    <h2>@T("Hoho.Home.ViewProducts.CarItemCTA")</h2>
+                    <a class="btn btn-primary" href="@goToCatalogUrl">@T("Hoho.Home.ViewProducts.CarItemLink")</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*Discover more section*@
+    <div class="view-all-cta title">
+        @*<h1>@T("Homepage.Products")</h1>*@
+        <h1>@T("Hoho.Home.ViewProducts.ViewAllCTA_Title")</h1>
+        <p class="mb-0">@T("Hoho.Home.ViewProducts.ViewAllCTA_Decr")</p>
+        <div>
+            <button onclick="window.location.href='@goToCatalogUrl'">@T("Hoho.Home.ViewProducts.ViewAllCTA_Shop")</button>
+            <button class="learn-more" onclick="window.location.href='@goToCatalogUrl'">@T("Hoho.Home.ViewProducts.AlViewAllCTA_learn")</button>
+        </div>
+    </div>
+}

@@ -1,0 +1,23 @@
+﻿@model SpecificationFilterModel
+
+@{
+    if (Model == null || !Model.Attributes.Any())
+        return;
+}
+
+<li>
+    @foreach (var specAttribute in Model.Attributes)
+    {
+        <a class="has-submenu">
+            @specAttribute.Name
+            <span id="svg_icon"></span>
+        </a>
+        <ul class="dd_submenu">
+            @foreach (var item in specAttribute.Values)
+            {
+                <li><a href="@item.FilterUrl">@item.Name</a></li>
+                @*https://hoho.ge/en/for-her?specs=43*@
+            }
+        </ul>
+    }
+</li>

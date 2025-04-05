@@ -1,0 +1,50 @@
+﻿@{
+    ViewData["Title"] = "hoho.ge - Comming soon";
+}
+
+@*<div class="elements-back">
+</div>*@
+<div class="container">
+    <img class="bg_img" src="/img/Happywithgift_1980-compressed.jpeg" alt="happy girl with gift">
+    @* <img class="bg_img_elements" src="/img/background.png" alt="identity elements"> *@
+    <div class="top-ribbon">
+        <h1 class="top-text1">რა არის ეს? </h1>
+        <h1 class="top-text2">რომ გახსნი გაიგებ</h1>
+    </div>
+
+    <div class="coming">
+        <h1 class="top-text1">Coming soon...</h1>
+        <div id="countdown"></div>
+    </div>
+
+</div>
+
+<script>
+    // Определяем дату, до которой будет идти обратный отсчет (например, 31 декабря 2024 года)
+    var countdownDate = new Date("April 30, 2024 23:59:59");
+
+    // Обновляем счетчик обратного отсчета каждую секунду
+    var x = setInterval(function () {
+        // Получаем текущую дату и время
+        var now = new Date().getTime();
+
+        // Рассчитываем разницу между текущим временем и датой обратного отсчета
+        var distance = countdownDate - now;
+
+        // Вычисляем дни, часы, минуты и секунды до завершения счетчика обратного отсчета
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Отображаем результат на странице
+        document.getElementById("countdown").innerHTML = days + "days, " + hours + ":"
+            + minutes + ":" + seconds;
+
+        // Если обратный отсчет завершился, выводим сообщение
+        if (distance < 0) {
+            clearInterval(x);
+            document.getElementById("countdown").innerHTML = "Время истекло!";
+        }
+    }, 1000); // Обновляем счетчик каждую секунду
+</script>

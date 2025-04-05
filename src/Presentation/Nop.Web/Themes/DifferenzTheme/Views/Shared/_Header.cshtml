@@ -1,0 +1,62 @@
+﻿<div class="header header-wrapper">
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderBefore })
+
+
+    <div class="header-upper">
+        <div class="container">
+            <div class="mob-header-adjust">
+                <div class="header-selectors-wrapper">
+                    @await Component.InvokeAsync("LanguageSelector")
+                    @await Component.InvokeAsync("TaxTypeSelector")
+                    @await Component.InvokeAsync("CurrencySelector")
+                    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderSelectors })
+                </div>
+                <div class="header-links-wrapper">
+                    @await Component.InvokeAsync("HeaderLinks")
+                    @await Component.InvokeAsync("FlyoutShoppingCart")
+                </div>
+                <img id="search-mob-btn" src="/Themes/DifferenzTheme/Content/images/thumbs/new/icons/search.svg">
+            </div>
+            <div id="search-mob-field" class="search-box store-search-box">
+                @await Component.InvokeAsync(typeof(SearchBoxViewComponent))
+            </div>
+            <script asp-location="Footer">
+                $(document).ready(function () {
+                    $('#search-mob-btn').on('click', function () {
+                        $('#search-mob-field #small-searchterms').val('');
+                        $('#search-mob-field').toggle();
+                    });
+                    $('#search-mob-field').focusout(function () {
+                        $('#search-mob-field #small-searchterms').val('');
+                        //$('#search-mob-field').hide();
+                    });
+                });
+            </script>
+        </div>
+    </div>
+
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderMiddle })
+
+    <div class="header-lower">
+        <div class="container header-lower-inner">
+            <div class="header-logo">
+                @await Component.InvokeAsync(typeof(LogoViewComponent))
+            </div>
+            <div class="search-box store-search-box">
+                @await Component.InvokeAsync(typeof(SearchBoxViewComponent))
+            </div>
+            <div>
+                <button onclick="window.location.href='@Url.RouteUrl("CheckCertificate")'">@T("Header.Top.ActivateBtn")</button>
+            </div>
+        </div>
+    </div>
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderAfter })
+</div>
+
+
+@{
+    var themeName = await themeContext.GetWorkingThemeNameAsync();
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, $"~/Themes/{themeName}/Content/js/Head.js");
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, $"~/Themes/{themeName}/Content/js/owl.carousel.min.js");
+    NopHtml.AppendScriptParts(ResourceLocation.Footer, $"~/Themes/{themeName}/Content/js/_header.js");
+}

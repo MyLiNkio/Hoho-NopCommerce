@@ -1,0 +1,35 @@
+﻿#uni-slider_container {
+}
+
+.uni-slider {
+}
+
+.uni-slide {
+  position: relative;
+}
+
+.uni-slide__link {
+}
+
+.uni-slider__back-img {
+}
+
+.uni-slider__front-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+
+@media (min-width: 480px) {
+  .uni-slide--hide-universal {
+    display: none;
+  }
+}
+
+@media (max-width: 479px) {
+  .uni-slide--hide-mobile {
+    display: none;
+  }
+}

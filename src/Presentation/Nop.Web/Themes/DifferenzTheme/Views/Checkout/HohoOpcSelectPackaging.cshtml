@@ -1,0 +1,138 @@
+﻿@model CheckoutDetailsModel
+
+<div class="select-packaging">
+    <div class="checkout-step-title">
+        <h2>@T("CheckoutPanel.SP.Title")</h2>
+    </div>
+    @{
+        var packageTypeName = nameof(Model.UseElectronicCertificate);
+    }
+    <div class="checkout-step-data">
+        <div class="inputs selector">
+            <div class="checkbox-skin">
+                <input type="radio" asp-for="UseElectronicCertificate" value="false" data-selector-id="gift-packages"
+                       checked="@(Model.UseElectronicCertificate == false)" id="pack-as-gift" data-group-id="@packageTypeName" />
+                <label class="forcheckbox" for="pack-as-gift">@T("CheckoutPanel.SP.GiftPackaging")</label>
+                <p>
+                    @T("CheckoutPanel.SP.GiftPackagingDescription")
+                </p>
+            </div>
+            <div class="checkbox-skin">
+                <input type="radio" asp-for="UseElectronicCertificate" value="true" data-selector-id="electronic-certs"
+                       checked="@(Model.UseElectronicCertificate == true)" id="send-to-email" data-group-id="@packageTypeName" />
+                <label class="forcheckbox" for="send-to-email">@T("CheckoutPanel.SP.Certificate")</label>
+                <p>
+                    @T("CheckoutPanel.SP.CertificateDescription")
+                </p>
+                <p>
+                    @T("CheckoutPanel.SP.CertificateDescription2")
+                </p>
+            </div>
+        </div>
+
+        <div id="gift-packages" class="gift-box-selector">
+            @{
+                var counter = 0;
+                int initialId = 0;
+            }
+            <div class="packages-container">
+                @if (Model.PackagingProducts.Count() == 0)
+                {
+                    <div class="warning"><p>@T("CheckoutPanel.Warning.NoBoxes")</p></div>
+                }
+
+                @foreach (var product in Model.PackagingProducts)
+                {
+                    <div class="package-item @Html.Raw(counter==0?"selected":string.Empty)" data-id="@product.Id">
+                        <input type="radio" value="@product.Id" name="box-packaging-product-id" checked="@(counter == 0)" />
+                        <div class="package-item-picture">
+                            @{
+                                var picture = product.PictureModels.FirstOrDefault();
+                                    <img alt="@picture?.AlternateText" src="@picture?.ImageUrl" title="@picture?.Title" />
+                            }
+                        </div>
+                        <div class="package-item-content">
+                            <h4> @product.Name</h4>
+                            <div class="the-price">
+                                @if (!string.IsNullOrEmpty(product.ProductPrice.Price))
+                                {
+                                    <span data-price="@System.Math.Round(product.ProductPrice.PriceValue.Value, 2)">
+                                        @product.ProductPrice.Price
+                                    </span>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    if (counter == 0)
+                    {
+                        initialId = product.Id;
+                    }
+                    counter++;
+                }
+            </div>
+            <input id="selectedBoxId" type="hidden" asp-for="BoxProductId" value="@initialId" />
+
+        </div>
+        <div id="electronic-certs" class="gift-box-selector" style="display: none;">
+            <div class="packages-container">
+                <div class="package-item selected">
+                    <div class="package-item-picture">
+                        <img alt="Certificate example" title="Certificate example" src="~/images/static/certificate.png">
+                    </div>
+                    <div class="package-item-content">
+                        <h4>Certificate to email</h4>
+                        <div class="the-price">
+                            <span data-price="0">0 GEL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script asp-location="Footer">
+            $('.packages-container').children().each(function () {
+                if ($(this).hasClass('selected')) {
+                    const dataPriceElement = $(this).find('[data-price]');
+                    if (dataPriceElement.length > 0) {
+                        const dataPriceValue = dataPriceElement.attr('data-price');
+                        CheckoutLoaderHelper.setPackagingPrice(dataPriceValue);
+                        return false; // This will exit the loop early
+                    }
+                }
+            });
+
+            $(document).ready(function () {
+                $('[data-group-id="@packageTypeName"]').change(function () {
+                    var selectedValue = $(this).data('selector-id');
+                    $('.gift-box-selector').hide();
+                    $('#' + selectedValue).show();
+
+                    var selectedDenom = $('#' + selectedValue).find('.selected');
+                    if (selectedDenom.length > 0) {
+                        var elementWithDataPrice = selectedDenom.find('[data-price]');
+                        if (elementWithDataPrice.length > 0) {
+                            var dataPriceValue = elementWithDataPrice.attr('data-price');
+                            CheckoutLoaderHelper.setPackagingPrice(dataPriceValue);
+                        }
+                    }
+                });
+            });
+
+            $(document).ready(function () {
+                $('#gift-packages .package-item').click(function () {
+                    var selectedId = $(this).data('id');
+                    $('#selectedBoxId').val(selectedId);
+
+                    var $priceElement = $(this).find('[data-price]');
+                    if ($priceElement.length > 0) {
+                        var selectedPrice = $priceElement.data('price');
+                        CheckoutLoaderHelper.setPackagingPrice(selectedPrice);
+                    }
+
+                    $('#gift-packages .package-item').removeClass('selected');
+                    $(this).addClass("selected");
+                });
+            });
+        </script>
+    </div>
+</div>

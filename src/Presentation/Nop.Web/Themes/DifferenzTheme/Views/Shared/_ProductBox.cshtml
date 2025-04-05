@@ -1,0 +1,154 @@
+﻿@model ProductOverviewModel
+@using Nop.Core
+@using Nop.Core.Domain.Catalog
+@using Nop.Core.Domain.Orders
+@using Nop.Core.Domain.Tax
+@inject CatalogSettings catalogSettings
+@inject IWorkContext workContext
+@{
+    //prepare "Add to cart" AJAX link
+    var addtocartlink = "";
+    var shoppingCartTypeId = (int)ShoppingCartType.ShoppingCart;
+    var quantity = 1;
+    if (Model.ProductPrice.ForceRedirectionAfterAddingToCart)
+    {
+        addtocartlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = Model.Id, shoppingCartTypeId = shoppingCartTypeId, quantity = quantity, forceredirection = Model.ProductPrice.ForceRedirectionAfterAddingToCart });
+    }
+    else
+    {
+        addtocartlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = Model.Id, shoppingCartTypeId = shoppingCartTypeId, quantity = quantity });
+    }
+
+    var addtowishlistlink = Url.RouteUrl("AddProductToCart-Catalog", new { productId = Model.Id, shoppingCartTypeId = (int)ShoppingCartType.Wishlist, quantity = quantity });
+    var addtocomparelink = Url.RouteUrl("AddProductToCompare", new { productId = Model.Id });
+    bool isSpecial = ViewData.ContainsKey("IsSpecial") ? (bool)ViewData["IsSpecial"] : false;
+}
+
+@*------------------------------------------- Grid view ------------------------------------------------------------*@
+
+<div class="product-item product-wrapper item-box grid-view" data-productid="@Model.Id">
+    <div class="product-image-inner">
+        @if (Model.PictureModels.Count > 1)
+        {
+            <div class="swiper" id="swiper-@Model.Id" dir="@Html.GetUIDirection(!await Html.ShouldUseRtlThemeAsync())">
+                <div class="swiper-wrapper">
+                    @foreach (var picture in Model.PictureModels)
+                    {
+                        <a class="swiper-slide" href="@(Url.RouteUrl<Product>(new { SeName = Model.SeName }))" title="@picture.Title">
+                            @*<img alt="@picture.AlternateText" src="@picture.ImageUrl" title="@picture.Title" />*@
+                            <img class="owl-lazy product-image picture" alt="@picture.AlternateText" @Html.Raw(isSpecial ? "data-srcset" : "src")="@picture.ImageUrl" title="@picture.Title">
+
+                        </a>
+                    }
+                </div>
+                <!-- Add Pagination -->
+                <div class="swiper-pagination"></div>
+            </div>
+
+            <script asp-location="Footer">
+                new Swiper('#swiper-@(Model.Id)', {
+                    pagination: {
+                        clickable: true,
+                        el: '.swiper-pagination',
+                    },
+                });
+            </script>
+        }
+        else
+        {
+            var picture = Model.PictureModels.FirstOrDefault();
+            <a href="@(Url.RouteUrl<Product>(new { SeName = Model.SeName }))" title="@picture?.Title">
+                <img class="owl-lazy" alt="@picture?.AlternateText" @Html.Raw(isSpecial ? "data-srcset" : "src")="@picture?.ImageUrl" title="@picture?.Title" />
+            </a>
+        }
+        @*<img class="product-image picture" alt="@Model.DefaultPictureModel.AlternateText" src="@Model.DefaultPictureModel.ImageUrl" title="@Model.DefaultPictureModel.Title">*@
+        @if (!Model.ProductPrice.DisableAddToCompareListButton)
+        {
+            <a class="compare add-to-compare-list-button" title="@T("ShoppingCart.AddToCompareList")" onclick="AjaxCart.addproducttocomparelist('@addtocomparelink');return false;">
+                <img class="owl-lazy" @Html.Raw(isSpecial ? "data-srcset" : "src")="~/Themes/DifferenzTheme/Content/images/thumbs/new/icons/compare.svg" alt="@T("ShoppingCart.AddToCompareList")">
+            </a>
+        }
+
+    </div>
+    @if (Model.ReviewOverviewModel.AllowCustomerReviews)
+    {
+        var ratingPercent = 0;
+        if (Model.ReviewOverviewModel.TotalReviews != 0)
+        {
+            ratingPercent = ((Model.ReviewOverviewModel.RatingSum * 100) / Model.ReviewOverviewModel.TotalReviews) / 5;
+        }
+        @*<div class="product-rating-box" title="@string.Format(T("Reviews.TotalReviews").Text, Model.ReviewOverviewModel.TotalReviews)">
+    <div class=rating>
+    <div style="width:@(ratingPercent)%"></div>
+    </div>
+    </div>*@
+        <div class="product-rating-box">
+            <div class="rating">
+                <div style="width: @(ratingPercent)%"></div>
+            </div>
+        </div>
+    }
+    <a href="@(Url.RouteUrl<Product>(new { SeName = Model.SeName }))">
+        <div>
+            <h5 class="product-title"> @Model.Name</h5>
+            <p class="desc-pro">@Html.Raw(Model.ShortDescription)</p>
+        </div>
+    </a>
+
+
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductBoxAddinfoBefore, additionalData = Model })
+
+
+    <div class="sku">
+        @if (catalogSettings.ShowSkuOnCatalogPages && !string.IsNullOrEmpty(Model.Sku))
+        {
+            @Model.Sku
+        }
+    </div>
+
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductBoxAddinfoMiddle, additionalData = Model })
+
+
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductBoxAddinfoAfter, additionalData = Model })
+
+    @*@await Html.PartialAsync("_ProductBox.PriceOptions", Model)*@
+
+    <div>
+        <div class="product-item__btns">
+            <div class="prices">
+                @if (!string.IsNullOrEmpty(Model.ProductPrice.OldPrice))
+                {
+                    <span class="the-old-price">@Model.ProductPrice.OldPrice</span>
+                }
+                @if (!string.IsNullOrEmpty(Model.ProductPrice.Price))
+                {
+                    <span class="the-price">@Model.ProductPrice.Price</span>
+                }
+            </div>
+            @if (!Model.ProductPrice.DisableWishlistButton)
+            {
+                <button type="button" class="product_wish_btn" onclick="AjaxCart.addproducttocart_catalog('@addtowishlistlink');return false;">
+                    <span>
+                        <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M19.3095 3.14008L19.3098 3.14033C19.7511 3.58143 20.1012 4.10517 20.34 4.68161C20.5789 5.25805 20.7018 5.87591 20.7018 6.49987C20.7018 7.12384 20.5789 7.74169 20.34 8.31813C20.1012 8.89458 19.7511 9.41831 19.3098 9.85942L19.3097 9.85954L18.2497 10.9195L11 18.1692L3.75033 10.9195L2.69033 9.85954C1.79929 8.9685 1.29871 7.75999 1.29871 6.49987C1.29871 5.23975 1.79929 4.03124 2.69033 3.1402C3.58137 2.24916 4.78988 1.74858 6.05 1.74858C7.31012 1.74858 8.51863 2.24916 9.40967 3.1402L10.4697 4.2002C10.7626 4.4931 11.2374 4.4931 11.5303 4.2002L12.5903 3.1402L12.5905 3.14008C13.0316 2.69876 13.5553 2.34868 14.1317 2.10983C14.7082 1.87098 15.326 1.74805 15.95 1.74805C16.574 1.74805 17.1918 1.87098 17.7683 2.10983C18.3447 2.34868 18.8684 2.69876 19.3095 3.14008Z" stroke="#D40404" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </span>
+                </button>
+            }
+
+            @if (!Model.ProductPrice.DisableBuyButton)
+            {
+                var addToCartText = T("ShoppingCart.AddToCart").Text;
+                if (Model.ProductPrice.IsRental)
+                {
+                    addToCartText = T("ShoppingCart.Rent").Text;
+                }
+                if (Model.ProductPrice.AvailableForPreOrder)
+                {
+                    addToCartText = T("ShoppingCart.PreOrder").Text;
+                }
+                <button type="button" class="small-btn product-box-add-to-cart-button add-cart" onclick="AjaxCart.addproducttocart_catalog('@addtocartlink');return false;">@(addToCartText)</button>
+            }
+        </div>
+    </div>
+</div>

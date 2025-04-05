@@ -1,0 +1,273 @@
+﻿@model HohoOnePageCheckoutModel
+
+@{
+    var showWhenDeliverToMe = "show-deliver-to-me";
+    var showWhenPickup = "show-pick-up";
+    var showWhenToRecipient = "show-to-recipient";
+    var showAll = "show-all";
+}
+
+<div class="checkout-step-title">
+    <h2>@T("CheckoutPanel.FH.Title")</h2>
+</div>
+<div class="checkout-step-data">
+    <div class="inputs">
+        @{
+            var buyAsGiftName = nameof(Model.CheckoutDetails.BuyingAsGift);
+            var buyAsGiftIdName = "buying-as-gift";
+        }
+        <div>
+            <input id="@buyAsGiftIdName" type="radio" asp-for="@buyAsGiftName" value="true" name="@buyAsGiftName" checked="@(Model.CheckoutDetails.BuyingAsGift == true)" />
+            <label class="forcheckbox" for="@buyAsGiftIdName">@T("CheckoutPanel.FH.AsGift")</label>
+        </div>
+        <div>
+            <input id="buying-for-myslef" type="radio" asp-for="@buyAsGiftName" value="false" name="@buyAsGiftName" checked="@(Model.CheckoutDetails.BuyingAsGift == false)" />
+            <label class="forcheckbox" for="buying-for-myslef">@T("CheckoutPanel.FH.ForMyself")</label>
+        </div>
+    </div>
+</div>
+
+<div id="how-to-deliver">
+    <div class="checkout-step-title">
+        <h2>@T("CheckoutPanel.DI.Title")</h2>
+    </div>
+    <div class="checkout-step-data">
+        <div class="inputs">
+            @{
+                var deliveryGroupName = "delivery-btns";
+                var pickupName = nameof(Model.CheckoutDetails.PickupInStore);
+                var sendToMeName = nameof(Model.CheckoutDetails.SendToCustomer);
+                var sendToRecipientName = nameof(Model.CheckoutDetails.SendToRecipient);
+            }
+            <div class="" id="@pickupName-parent">
+                <input type="radio" asp-for="CheckoutDetails.PickupInStore" value="true" name="CheckoutDetails.PickupInStore" data-group="@deliveryGroupName" checked="@(false)" id="@pickupName-id" />
+                <label class="forcheckbox" for="@pickupName-id">@T("CheckoutPanel.DI.Pickup")</label>
+            </div>
+            <div class="" id="@sendToMeName-parent">
+                <input type="radio" asp-for="CheckoutDetails.SendToCustomer" value="true" name="CheckoutDetails.SendToCustomer" data-group="@deliveryGroupName" checked="@(false)" id="@sendToMeName-id" />
+                <label class="forcheckbox" for="@sendToMeName-id">@T("CheckoutPanel.DI.SendToMe")</label>
+            </div>
+            <div class="" id="@sendToRecipientName-parent">
+                <input type="radio" asp-for="CheckoutDetails.SendToRecipient" value="true" name="CheckoutDetails.SendToRecipient" data-group="@deliveryGroupName" checked="@(false)" id="@sendToRecipientName-id" />
+                <label class="forcheckbox" for="@sendToRecipientName-id">@T("CheckoutPanel.DI.SendToRecip")</label>
+            </div>
+            <script asp-location="Footer">
+                $(document).ready(function () {
+                    showHideDataElement('@showAll') //set all elements to an initial state.
+
+                    if (@Html.Raw(Model.CheckoutDetails.SendToRecipient.ToString().ToLower())) {
+                        showHideDataElement('@showAll');
+                        showHideDataElement('@showWhenToRecipient');
+                    }
+                    if (@Html.Raw(Model.CheckoutDetails.SendToCustomer.ToString().ToLower())) {
+                        showHideDataElement('@showAll');
+                        showHideDataElement('@showWhenDeliverToMe');
+                    }
+
+                    BtnsControler.init(@Html.Raw(Model.CheckoutDetails.UseElectronicCertificate ? "true" : "false"),
+                        '@buyAsGiftIdName',
+                        '@pickupName-parent',
+                        '@sendToMeName-parent',
+                        '@sendToRecipientName-parent'
+                    );
+
+                    $('input[name="@buyAsGiftName"]').change(changeByAsAGiftGroup);
+
+                    $('[data-group="@deliveryGroupName"]').change(changeDeliveryGroup);
+
+                    function changeByAsAGiftGroup() {
+                        $('[data-group="delivery-btns"]').prop('checked', false); //reset all radiobuttons in a group to "unchecked" state
+                        //BtnsControler.update(); // Reinitialize BtnsControler after radio button change
+                        showHideDataElement('@showAll'); //set all elements to an initial state.
+                    }
+
+                    function changeDeliveryGroup() {
+                        // Set to "unchecked" all radio buttons in a group instead of the selected one
+                        $('[data-group="delivery-btns"]').not(this).prop('checked', false);
+
+                        //set visibility of elements in initial state
+                        showHideDataElement('@showAll');
+
+                        //handle visibility according to state
+                        let itemName = $(this).attr('id');
+                        if (itemName == '@pickupName-id' && this.checked) {
+                            showHideDataElement('@showWhenPickup');
+                        }
+
+                        if (itemName == '@sendToMeName-id' && this.checked) {
+                            showHideDataElement('@showWhenDeliverToMe');
+                        }
+
+                        if (itemName == '@sendToRecipientName-id' && this.checked) {
+                            showHideDataElement('@showWhenToRecipient');
+                        }
+                    }
+                });
+
+                //find elements with dataAttribute and show or hide if the value equeals 1 or 0.
+                function showHideDataElement(attributeName) {
+                    let elements = $('[data-' + attributeName + ']');
+                    elements.each(function () {
+                        let value = $(this).data(attributeName);
+                        let element = $(this);
+                        if (value === 1) {
+                            element.show();
+                        } else if (value === 0) {
+                            element.hide();
+                        }
+                    });
+                }
+            </script>
+        </div>
+    </div>
+</div>
+
+@if (!Model.CheckoutDetails.UseElectronicCertificate)
+{
+    <div class="checkout-pickup-points" style="display: none;" @($"data-{showAll}")="0" @($"data-{showWhenPickup}")="1">
+
+        @await Html.PartialAsync("_PickupPoints", Model.ShippingMethods.PickupPointsModel)
+
+        <script>
+            //shows a block, where user will be able to select a store, where he will pickup the box.
+            $(document).ready(function () {
+                $('#pickup-points-form').show(); //very important in order to reset "display:none;" initial state
+
+                $(document).unbind('checkout_toggle_pickup_in_store');
+                $(document).on('checkout_toggle_pickup_in_store', function (e) {
+                    if (e.checked)
+                        $('#shipping-methods-form').hide();
+                    else
+                        $('#shipping-methods-form').show();
+                });
+            });
+
+            //removes a section 'div.section.pickup-in-store' from html as it shouldn't be used in customized page
+            $(document).ready(function () {
+                var pickupInStoreDiv = $('div.section.pickup-in-store');
+                if (pickupInStoreDiv.length > 0) {
+                    pickupInStoreDiv.remove();
+                }
+            });
+        </script>
+    </div>
+
+    <div id="shipping-methods-form" class="section shipping-method" @($"data-{showAll}")="0" @($"data-{showWhenDeliverToMe}")="1" @($"data-{showWhenToRecipient}")="1">
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.OpCheckoutShippingMethodTop, additionalData = Model.ShippingMethods })
+        @if (Model.ShippingMethods.Warnings.Count == 0)
+        {
+            <ul class="method-list">
+                @for (var i = 0; i < Model.ShippingMethods.ShippingMethods.Count; i++)
+                {
+                    var shippingMethod = Model.ShippingMethods.ShippingMethods[i];
+                    <li>
+                        <div class="method-name">
+                            <input id="shippingoption_@(i)" type="radio" name="shippingoption" value="@(shippingMethod.Name)___@(shippingMethod.ShippingRateComputationMethodSystemName)" checked="@shippingMethod.Selected" />
+                            <label for="shippingoption_@(i)">@T("Checkout.SelectShippingMethod.MethodAndFee", shippingMethod.Name, shippingMethod.Fee)</label>
+                        </div>
+                        @if (!string.IsNullOrEmpty(shippingMethod.Description))
+                        {
+                            <div class="method-description">
+                                @Html.Raw(shippingMethod.Description)
+                            </div>
+                        }
+                    </li>
+                }
+            </ul>
+            if (Model.ShippingMethods.NotifyCustomerAboutShippingFromMultipleLocations)
+            {
+                <div class="multiple-locations">
+                    @T("Checkout.ShippingMethod.ShippingFromMultipleLocations")
+                </div>
+            }
+        }
+        else
+        {
+            <div class="message-error">
+                <ul>
+                    @foreach (var warning in Model.ShippingMethods.Warnings)
+                    {
+                        <li>@warning</li>
+                    }
+                </ul>
+            </div>
+        }
+        @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.OpCheckoutShippingMethodBottom, additionalData = Model.ShippingMethods })
+    </div>
+}
+
+
+<div id="recipient-info" @($"data-{showAll}")="0" @($"data-{showWhenDeliverToMe}")="1" @($"data-{showWhenToRecipient}")="1">
+    <div class="checkout-step-title">
+        <h2>@T("CheckoutPanel.RI.Title")</h2>
+    </div>
+    <div class="checkout-step-data">
+        <div id="recipient-data">
+            <div class="show-customer-info" @($"data-{showAll}")="0" @($"data-{showWhenDeliverToMe}")="1">
+                <p class="name">@Model.CustomerInfo.FirstName @Model.CustomerInfo.LastName</p>
+                <p class="phone">@Model.CustomerInfo.PhoneNumber</p>
+                <p class="email">@Model.CustomerInfo.Email</p>
+            </div>
+            <div class="edit-customer">
+                <div class="edit-customer-name" @($"data-{showAll}")="0" @($"data-{showWhenToRecipient}")="1">
+                    <div class="inputs">
+                        <div class="with-required">
+                            <label asp-for="RecipientInfo.FirstName" asp-postfix=":"></label>
+                            <nop-required />
+                        </div>
+                        <input class="name" asp-for="RecipientInfo.FirstName" />
+                        <span asp-validation-for="RecipientInfo.FirstName"></span>
+                    </div>
+                    <div class="inputs">
+                        <div class="with-required">
+                            <label asp-for="RecipientInfo.LastName" asp-postfix=":"></label>
+                            <nop-required />
+                        </div>
+                        <input class="name" asp-for="RecipientInfo.LastName" />
+                        <span asp-validation-for="RecipientInfo.LastName"></span>
+                    </div>
+                </div>
+
+                @if (Model.CheckoutDetails.UseElectronicCertificate)
+                {
+                    <div class="inputs" @($"data-{showAll}")="0" @($"data-{showWhenToRecipient}")="1">
+                        <div class="with-required">
+                            <label asp-for="RecipientInfo.Email" asp-postfix=":"></label>
+                            <nop-required />
+                        </div>
+                        <input class="email" asp-for="RecipientInfo.Email" />
+                        <span asp-validation-for="RecipientInfo.Email"></span>
+                    </div>
+                }
+                else
+                {
+                    <div class="inputs" @($"data-{showAll}")="0" @($"data-{showWhenToRecipient}")="1">
+                        <div class="with-required">
+                            <label asp-for="RecipientInfo.PhoneNumber" asp-postfix=":"></label>
+                            <nop-required />
+                        </div>
+                        <input class="phone" asp-for="RecipientInfo.PhoneNumber" />
+                        <span asp-validation-for="RecipientInfo.PhoneNumber"></span>
+                    </div>
+                    <div class="inputs" @($"data-{showAll}")="0" @($"data-{showWhenDeliverToMe}")="1" @($"data-{showWhenToRecipient}")="1">
+                        <div class="with-required">
+                            <label asp-for="RecipientInfo.City" asp-postfix=":"></label>
+                            <nop-required />
+                        </div>
+                        <input class="name" asp-for="RecipientInfo.City" />
+                        <span asp-validation-for="RecipientInfo.City"></span>
+                    </div>
+                    <div class="inputs" @($"data-{showAll}")="0" @($"data-{showWhenDeliverToMe}")="1" @($"data-{showWhenToRecipient}")="1">
+                        <div class="with-required">
+                            <label asp-for="RecipientInfo.Address" asp-postfix=":"></label>
+                            <nop-required />
+                        </div>
+                        <textarea class="name" asp-for="RecipientInfo.Address"></textarea>
+                        <span asp-validation-for="RecipientInfo.Address"></span>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

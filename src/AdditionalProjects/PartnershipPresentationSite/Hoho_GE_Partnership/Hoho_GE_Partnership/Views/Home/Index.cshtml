@@ -1,0 +1,36 @@
+﻿
+<div id="content">
+    <img class="logo" src="./img/logo.svg" alt="Logo">
+    <h1 class="info">საუკეთესო საჩუქარი</h1>
+    <h1 class="coming_soon">Coming soon</h1>
+    <div id="countdown"></div>
+</div>
+
+<script>
+    // Определяем дату для счетчика обратного отсчета (1 мая 2024 года в 00:00:00)
+    var countdownDate = new Date("May 1, 2024 00:00:00").getTime();
+
+    // Обновляем счетчик обратного отсчета каждую секунду
+    var x = setInterval(function () {
+        var now = new Date().getTime();
+        var distance = countdownDate - now;
+
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // Отображаем результат счетчика обратного отсчета
+        if (days > 0) {
+            document.getElementById("countdown").innerHTML = days + " Days : " + hours + " Hrs : " + minutes + " Min";
+        } else {
+            document.getElementById("countdown").innerHTML = hours + " Hrs : " + minutes + " Min : " + seconds + " Sec";
+        }
+
+        // Если время истекло, останавливаем счетчик
+        if (distance < 0) {
+            clearInterval(x);
+            document.getElementById("countdown").innerHTML = "EXPIRED";
+        }
+    }, 1000);
+</script>

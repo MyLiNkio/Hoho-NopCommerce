@@ -8,7 +8,8 @@
 @inject SeoSettings seoSettings
 
 @{
-    Layout = "_ColumnsTwo";
+    // HOHOImprove
+    Layout = "_ColumnsOne";
 
     //title
     NopHtml.AddTitleParts(!string.IsNullOrEmpty(Model.MetaTitle) ? Model.MetaTitle : Model.Name);
@@ -25,9 +26,10 @@
     }
 }
 
-@section CatalogFilters {
+@* HOHOImprove *@
+@* @section CatalogFilters {
     @await Html.PartialAsync("_CatalogFilters", Model.CatalogProductsModel)
-}
+} *@
 
 <div class="page vendor-page">
     <div class="page-title">

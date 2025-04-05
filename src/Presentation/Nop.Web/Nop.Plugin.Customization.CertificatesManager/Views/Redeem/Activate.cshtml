@@ -1,0 +1,270 @@
+﻿@using Nop.Core.Domain.Catalog;
+@using Nop.Services.Helpers
+@*//MoveRedeem*@
+@model ActivateCertificateModel
+
+@inject IDateTimeHelper _dateTimeHelper;
+
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.Redeem").Text);
+
+    //page class
+    NopHtml.AppendPageCssClassParts("html-redeem-page");
+
+    var isError = !Model.OrderItems.Any() || !Model.OrderItemId.HasValue;
+    RedeemOrderItemModel item = null;
+    if (!isError)
+    {
+        item = Model.OrderItems.FirstOrDefault(x => x.OrderItemId == Model.OrderItemId.Value);
+        isError = item == null;
+    }
+
+    if (isError)
+        throw new Exception($"Activate.cshtml has and orderItemError for certificate: {Model.CertificateNumber}, validationToken: {Model.ValidationToken}");
+
+    var picture = item?.PictureModels.FirstOrDefault();
+}
+
+<div class="page activation-page redeem-page">
+    <div class="page-up-margin">
+        <div class="page-title title">
+            <h1>@T("Redeem.Check.PageTitle")</h1>
+        </div>
+
+        <div class="page-body">
+            @await Html.PartialAsync("~/Nop.Plugin.Customization.CertificatesManager/Views/Shared/_ActivationSteps.cshtml", 3)
+
+
+            <div class="cert-details">
+
+                <div>
+                    @* <h2 class="congrat">@T("Redeem.Activate.Title")</h2>
+                    <h2 class="congratSub">@T("Redeem.Activate.Subtitle")</h2> *@
+                    <h2>@T("Redeem.Activate.FolowInstruction")</h2>
+                </div>
+
+
+
+                <div>
+                    <ul class="redeem-activities-list">
+                        <li class="redeem-activity-item" data-step-2="" data-item-id="@item.OrderItemId" data-item-SKU="@item.Sku">
+                            <div class="redeem-item-container">
+                                <div class="redeem-item-top">
+                                    <a href="@(Url.RouteUrl<Product>(new { SeName = item.SeName }))" title="@picture?.Title">
+                                        <img class="owl-lazy" alt="@picture?.AlternateText" src="@picture?.ImageUrl" title="@picture?.Title" />
+                                    </a>
+
+                                    <a href="@(Url.RouteUrl<Product>(new { SeName = item.SeName }))">
+                                        <h3> @item.Name</h3>
+                                    </a>
+                                    <p class="activity-item-descr">@Html.Raw(item.ShortDescription)</p>
+                                </div>
+                                <div class="redeem-item-bottom">
+                                    @if (item.ProductAttributes != null)
+                                    {
+                                        foreach (var pAttribute in item.ProductAttributes)
+                                        {
+                                            if (pAttribute.Values?.Count > 0)
+                                            {
+                                                var preselectedItems = pAttribute.Values.Where(x => x.IsPreSelected).ToList();
+                                                var counter = 0;
+                                                if (preselectedItems.Count == 0)
+                                                {
+                                                    continue;
+                                                }
+
+                                                <p class="pAtribute">
+                                                    <span class="aName">
+                                                        @Html.Raw(string.IsNullOrEmpty(pAttribute.TextPrompt) ? pAttribute.Name : pAttribute.TextPrompt):
+                                                    </span>
+                                                    @foreach (var preselcted in preselectedItems)
+                                                    {
+                                                        string value = preselcted.Name;
+                                                        if (++counter < preselectedItems.Count)
+                                                        {
+                                                            value += ", ";
+                                                        }
+                                                        <span>@value</span>
+                                                    }
+                                                </p>
+                                            }
+                                        }
+                                    }
+                                    @* <button class="choose-and-activate" type="button" data-step-2="" data-order-item-id="@item.OrderItemId">@T("Redeem.Coose.ChooseBtn")</button> *@
+                                </div>
+                            </div>
+                        </li>
+                        <li class="redeem-activity-item">
+
+                            <div class="info-choose">
+                                <ul>
+                                    <li>
+                                        <span class="info-choose__check"></span>
+                                        <p>@T("Redeem.Activate.FillOut")</p>
+                                    </li>
+                                    <li>
+                                        <span class="info-choose__check"></span>
+                                        <p>@T("Redeem.Activate.FillDate")</p>
+                                    </li>
+                                    <li>
+                                        <span class="info-choose__check"></span>
+                                        <p>@T("Redeem.Activate.ManagerCall")</p>
+                                    </li>
+                                </ul>
+                                <div class="info-choose-bottom">
+                                    <p><span class="highlight">@T("Redeem.Activate.WeBook")</span></p>
+                                </div>
+                            </div>
+                        </li>
+
+
+                        @*Перенести или отменить ваше впечатление можно не позже, чем за 3-суток до забронированной даты. Если вы сообщите об отмене или переносе даты позже указанного времени, к сожалению, ваш сертификат аннулируется. Вы больше не сможете посетить по нему впечатление.
+                        Если впечатление зависит от погоды и в день проведения будет плохая погода, впечатление может быть перенесено на другую дату и время.*@
+                    </ul>
+                    <script asp-location="Footer">
+                        $(document).ready(function () {
+
+                            // Function to equalize the heights of images
+                            function equalizeImageHeights() {
+                                let width = $('.redeem-activity-item .owl-lazy').last().width();
+
+                                //modify images to 4:3 aspect ratio
+                                if (width) {
+                                    $('.redeem-activity-item .owl-lazy').each(function () {
+                                        var heightToSet = Math.round(width / 4) * 3;
+                                        $(this).css('height', heightToSet + 'px'); // Set the new height
+                                    });
+                                }
+                            }
+
+                            // Run the function when the document is ready
+                            equalizeImageHeights();
+
+                            // Run the function when the window is resized
+                            $(window).resize(function () {
+                                equalizeImageHeights();
+                            });
+                        });
+                    </script>
+                </div>
+
+
+                <form id="activate_service" asp-controller="Redeem" asp-action="Activate" method="post" autocomplete="off">
+                    <div class="activate-card-module">
+                        <div asp-validation-summary="ModelOnly" class="message-error"></div>
+                        @Html.HiddenFor(m => m.ValidationToken)
+                        @Html.HiddenFor(m => m.CertificateNumber)
+                        @Html.HiddenFor(m => m.OrderItemId, new { data_order_item_input = "data_order_item_input" })
+
+                        @await Html.PartialAsync("~/Nop.Plugin.Customization.CertificatesManager/Views/Shared/_CheckCardNumberField.cshtml", Model)
+
+                        @await Component.InvokeAsync(typeof(RedeemUserDetailsViewComponent), new { model = Model })
+
+                        <div class="fieldset">
+                            <div class="form-fields">
+                                <div class="inputs">
+                                    <label asp-for="Comment" asp-postfix=":"></label>
+                                    <nop-textarea asp-for="Comment" />
+                                </div>
+
+                                @*Agreements*@
+                                @if (Model.AcceptTermsOfServiceEnabled && Model.AcceptServiceDescriptionRestrictionsEnabled)
+                                {
+                                    <script asp-location="Footer">
+                                        $(document).ready(function () {
+                                            $('#register-button').on('click', function () {
+                                                if (!$('#termsofservice').is(':checked')) {
+                                                    //just show validation errors, don't post
+                                                    alert('@Html.Raw(JavaScriptEncoder.Default.Encode(T("Checkout.TermsOfService.PleaseAccept").Text))');
+                                                    return false;
+                                                }
+                                                else if (!$('#acceptrestrictions').is(':checked')) {
+                                                    //just show validation errors, don't post
+                                                    alert('@Html.Raw(JavaScriptEncoder.Default.Encode(T("Redeem.IRedDescription.PleaseAccept").Text))');
+                                                    return false;
+                                                } else {
+                                                    //do some stuff
+                                                    return true;
+                                                }
+                                            });
+                                        });
+                                    </script>
+                                    <div id="terms-of-service-warning-box" title="@T("Checkout.TermsOfService")" style="display:none;">
+                                        <p>@T("Checkout.TermsOfService.PleaseAccept")</p>
+                                    </div>
+                                    <div class="terms-of-service">
+                                        <input id="termsofservice" type="checkbox" name="termsofservice" />
+                                        <label for="termsofservice">@T("Checkout.TermsOfService.IAccept")</label>
+                                        @if (Model.TermsOfServicePopup)
+                                        {
+                                            <a class="read" id="read-terms">@T("Checkout.TermsOfService.Read")</a>
+                                            <script asp-location="Footer">
+                                                $(document).ready(function () {
+                                                    $('#read-terms').on('click',
+                                                        function (e) {
+                                                            e.preventDefault();
+                                                            displayPopupContentFromUrl(
+                                                                '@Url.RouteUrl("TopicPopup", new { SystemName = "conditionsofuse" })',
+                                                                '@T("Checkout.TermsOfService")');
+                                                        });
+                                                });
+                                            </script>
+                                        }
+                                        else
+                                        {
+                                            <a class="read" id="read-terms" href="@Url.RouteTopicUrl("conditionsofuse")">@T("Checkout.TermsOfService.Read")</a>
+                                        }
+                                    </div>
+                                    <div class="terms-of-service">
+                                        <input id="acceptrestrictions" type="checkbox" name="acceptrestrictions" />
+                                        <label for="acceptrestrictions">@T("Redeem.IRedDescription.IAccept")</label>
+                                    </div>
+                                }
+
+                                @if (Model.GdprConsents.Count > 0)
+                                {
+                                    foreach (var consent in Model.GdprConsents)
+                                    {
+                                        if (consent.IsRequired)
+                                        {
+                                            <script asp-location="Footer">
+                                                $(document).ready(function () {
+                                                    $('#register-button').on('click', function () {
+                                                        if ($('#consent@(consent.Id)').is(': checked')) {
+                                                            //do some stuff
+                                                            return true;
+                                                        }
+                                                        else {
+                                                            //just show validation errors, don't post
+                                                            alert('@Html.Raw(JavaScriptEncoder.Default.Encode(consent.RequiredMessage))');
+                                                            return false;
+                                                        }
+                                                    });
+                                                });
+                                            </script>
+                                        }
+                                        <div class="inputs accept-consent">
+                                            <input id="consent@(consent.Id)" type="checkbox" name="consent@(consent.Id)" checked="@consent.Accepted" />
+                                            <label for="consent@(consent.Id)">@consent.Message</label>
+                                        </div>
+                                    }
+                                }
+
+                            </div>
+                        </div>
+
+                        <div class="buttons">
+                            <button type="submit" name="register-button" class="button-1 register-next-step-button">@T("Redem.ActivateButton")</button>
+                        </div>
+
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>

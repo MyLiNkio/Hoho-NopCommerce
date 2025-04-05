@@ -1,0 +1,45 @@
+﻿@model CheckoutCustomerModel
+
+<div class="checkout-step-title">
+    <h2>@T("CheckoutPanel.CI.Title")</h2>
+</div>
+
+<div class="checkout-step-data">
+   
+    <div class="edit-customer">
+        <div class="edit-customer-name">
+            <div class="inputs">
+                <div class="with-required">
+                    <label asp-for="FirstName" asp-postfix=":"></label>
+                    <nop-required />
+                </div>
+                <input class="name" asp-for="FirstName" />
+                <span asp-validation-for="FirstName"></span>
+            </div>
+            <div class="inputs">
+                <div class="with-required">
+                    <label asp-for="LastName" asp-postfix=":"></label>
+                    <nop-required />
+                </div>
+                <input class="name" asp-for="LastName" />
+                <span asp-validation-for="LastName"></span>
+            </div>
+        </div>
+        <div class="inputs">
+            <div class="with-required">
+                <label asp-for="PhoneNumber" asp-postfix=":"></label>
+                <nop-required />
+            </div>
+            <input class="phone" asp-for="PhoneNumber" />
+            <span asp-validation-for="PhoneNumber"></span>
+        </div>
+        <div class="inputs">
+            <div class="with-required">
+                <label asp-for="Email" asp-postfix=":"></label>
+                <nop-required />
+            </div>
+            <input class="email" asp-for="Email" />
+            <span asp-validation-for="Email"></span>
+        </div>
+    </div>
+</div>

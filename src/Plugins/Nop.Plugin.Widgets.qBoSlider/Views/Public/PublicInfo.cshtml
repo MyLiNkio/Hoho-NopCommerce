@@ -1,0 +1,97 @@
+﻿@model WidgetZoneModel
+
+@*Build test*@
+@*OneMOde build on run test*@
+
+@using Nop.Plugin.Widgets.qBoSlider
+@using Nop.Web.Framework.UI
+@using Microsoft.AspNetCore
+
+@{
+    Layout = "";
+
+    nopHtml.AppendCssFileParts("~/Plugins/Widgets.qBoSlider/Content/css/uni-slider.css");
+
+    var lazyLoad = true;
+    var sliderId = "uni-slider-" + @Model.Id;
+    string autoPlay = Model.AutoPlay ? "true" : "false";
+}
+
+
+@functions
+{
+    string BuildSlideData(WidgetZoneModel.SlideModel slide, bool lazyLoad, bool mobileSlider = false)
+    {
+        <img class="uni-slider__back-img @Html.Raw(lazyLoad? "owl-lazy":string.Empty)"
+             src="@Html.Raw(lazyLoad? string.Empty:slide.PictureUrl)"
+             data-src="@slide.PictureUrl"
+             data-src-retina="@slide.PictureUrl" />
+
+        @if (!string.IsNullOrEmpty(slide.Description))
+        {
+            <div class="uni-slider__front-content">
+                @Html.Raw(slide.Description)
+            </div>
+        }
+        return string.Empty;
+    }
+
+    void BuildSlide(WidgetZoneModel.SlideModel slide, bool lazyLoad, bool mobileSlider = false)
+    {
+        if (slide == null) return;
+
+        var hideclassName = string.Empty;
+        if (!mobileSlider && slide.MobileScreenSlide != null)
+            hideclassName = "uni-slide--hide-mobile";
+
+        else if (mobileSlider)
+            hideclassName = "uni-slide--hide-universal";
+
+        <div class="@hideclassName">
+            @if (string.IsNullOrEmpty(slide.Hyperlink))
+            {
+                BuildSlideData(slide, lazyLoad);
+            }
+            else
+            {
+                <a class="uni-slide__link" href="@slide.Hyperlink">
+                    @BuildSlideData(slide, lazyLoad)
+                </a>
+            }
+        </div>
+
+        BuildSlide(slide.MobileScreenSlide, lazyLoad, true);
+    }
+}
+
+<div id="uni-slider_container">
+    <div class="uni-slider owl-carousel owl-theme" id="@sliderId">
+        @foreach (var slide in Model.Slides)
+        {
+            <div class="uni-slider__uni-slide uni-slide">
+                @if (slide != null)
+                {
+                    BuildSlide(slide, lazyLoad);
+                }
+            </div>
+        }
+    </div>
+</div>
+<script asp-location="Footer">
+    $("#@sliderId").owlCarousel({
+
+        lazyLoad: @Html.Raw(lazyLoad ? 1 : 0),
+
+        autoplay: @Html.Raw(Model.AutoPlay ? 1 : 0),
+        autoplayTimeout: @Model.AutoPlayInterval,
+        autoplayHoverPause: false,
+
+        items: 1,
+        margin: @Model.SlideSpacing,
+        slideSpeed: 2000,
+        nav: @((Model.ArrowNavigation != (int)NavigationType.None).ToString().ToLower()),
+        dots: @((Model.BulletNavigation != (int)NavigationType.None).ToString().ToLower()),
+        loop: true,
+        responsiveRefreshRate: 200,
+    });
+</script>

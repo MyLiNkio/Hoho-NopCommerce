@@ -1,0 +1,19 @@
+﻿@model Nop.Plugin.Payments.UniPay.Models.GatewayErrorModel
+
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("Error").Text);
+}
+<div class="page store-closed-page">
+    <div class="page-title">
+        <h1>@T("Plugins.Payments.UniPay.GatewayError.Title")</h1>
+    </div>
+    <div class="page-body">
+        @Model.ErrorCodeName
+    </div>
+    @*<div class="page-body">
+        @Model.ErrorCodeName: @Model.ErrorCodeDescription
+    </div>*@
+</div>

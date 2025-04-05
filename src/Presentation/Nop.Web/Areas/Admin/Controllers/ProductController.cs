@@ -1146,7 +1146,8 @@ public partial class ProductController : BaseAdminController
             await _productService.UpdateProductAsync(product);
 
             //remove associated products
-            if (previousProductType == ProductType.GroupedProduct && product.ProductType == ProductType.SimpleProduct)
+            //HOHOImprove
+            if (previousProductType == ProductType.GroupedProduct && product.ProductType != ProductType.GroupedProduct)
             {
                 var store = await _storeContext.GetCurrentStoreAsync();
                 var storeId = store?.Id ?? 0;

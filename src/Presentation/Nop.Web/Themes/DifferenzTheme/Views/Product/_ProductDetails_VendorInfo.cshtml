@@ -1,0 +1,90 @@
+﻿@using Nop.Core.Domain.Customers
+@using Nop.Core.Domain.Media
+@using Nop.Services.Common
+@using Nop.Services.Media
+@using Nop.Web.Factories
+@model ProductDetailsModel
+
+@inject IVendorService _vendorService
+@inject IPictureService _pictureService
+@inject IGenericAttributeService _genericAttributeService
+@inject MediaSettings _mediaSettings
+@inject IVendorModelFactory _vendorModelFactory
+
+@{
+    var vendor = await _vendorService.GetVendorByIdAsync(Model.VendorModel.Id);
+    @if (vendor == null || vendor.Deleted || !vendor.Active)
+        return;
+
+    var vendorLogoUrl = string.Empty;
+    vendorLogoUrl = await _pictureService.GetPictureUrlAsync(vendor.PictureId, _mediaSettings.VendorThumbPictureSize, true, defaultPictureType: PictureType.Entity);
+
+    var vendorAttributes = (await _vendorModelFactory.GetVendorModelAttributesAsync(vendor)).
+                 Where(x => x.AttributeControlType == AttributeControlType.TextBox && x.DefaultValue != null).
+                 ToDictionary(x => x.Name.ToString(), x => x.DefaultValue);
+}
+
+@if (vendorAttributes.Any())
+{
+    <div class="vendor-description">
+        <div class="vendor-description-main">
+            <div id="vendor-description-logo">
+                @if (!string.IsNullOrEmpty(vendorLogoUrl))
+                {
+                    <img id="vendor-logo-img" class="vendor-logo" src="@vendorLogoUrl" alt="Vendor logo.">
+                }
+                else
+                {
+                    <img id="vendor-logo-img" class="vendor-logo" src="~/Themes/DifferenzTheme/Content/images/no-avatar.png" alt="Vendor immage witout logo.">
+                }
+            </div>
+            <div class="vendor-d-m-head">
+                <div id="vendor-description-name">
+                    <div id="vendor-name" class="vendor-mini-info">
+                        <div class="vendor">
+                            <span class="value">
+                                <a href="@(Url.RouteUrl<Vendor>(new { SeName = Model.VendorModel.SeName }))" target="_blank" rel="noopener noreferrer">
+                                    @Model.VendorModel.Name
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <p id="vendor-description-text"></p>
+            </div>
+        </div>
+
+        @await Component.InvokeAsync(typeof(VendorLocationViewComponent), new { vendorId = vendor.Id })
+    </div>
+}
+else
+{
+    <div id="vendor-name" class="vendor-mini-info">
+        <div class="vendor">
+            <span class="value">
+                <a href="@(Url.RouteUrl<Vendor>(new { SeName = Model.VendorModel.SeName }))">@Model.VendorModel.Name</a>
+            </span>
+        </div>
+    </div>
+
+    @Html.Raw(vendor.Description)
+    ;
+    @if (!string.IsNullOrEmpty(vendorLogoUrl))
+    {
+        <img id="vendor-logo-img" class="vendor-logo" src="@vendorLogoUrl" alt="Vendor logo.">
+    }
+    else
+    {
+        <img id="vendor-logo-img" class="vendor-logo" src="~/Themes/DifferenzTheme/Content/images/no-avatar.png" alt="Vendor immage witout logo.">
+    }
+
+    <script asp-location="Footer">
+        $(document).ready(function () {
+            var $logo = $('#vendor-logo-img').detach();
+            $('#vendor-description-logo').append($logo);
+
+            var $name = $('#vendor-name').detach();
+            $('#vendor-description-name').append($name);
+        });
+    </script>
+}

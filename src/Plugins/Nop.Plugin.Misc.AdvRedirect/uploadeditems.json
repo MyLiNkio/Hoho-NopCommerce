@@ -1,0 +1,9 @@
+﻿[
+  {
+    "Type": "Plugin",
+    "SupportedVersion": "4.20",
+    "DirectoryPath": "Nop.Plugin.Misc.AdvRedirect/",
+    "SystemName": "Misc.AdvRedirect",
+    "SourceDirectoryPath": "Nop.Plugin.Misc.AdvRedirect/"
+  }
+]

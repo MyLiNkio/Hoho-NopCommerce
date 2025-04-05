@@ -5,11 +5,28 @@
 @using Nop.Core.Domain.Media
 @using Nop.Core.Domain.Orders
 @using Nop.Core.Domain.Tax
+@using Nop.Services.Catalog
 
 @inject IWebHelper webHelper
 @inject IWorkContext workContext
 @inject MediaSettings mediaSettings
 @inject OrderSettings orderSettings
+
+@* HOHOImprove *@
+@inject IProductService _productService;
+@functions {
+    public async Task<bool> IsQuantityEditAlloved(int productId)
+    {
+        var product = await _productService.GetProductByIdAsync(productId);
+        if (product == null) return false;
+
+        return product.ProductType != ProductType.ApplyToMulticertificate
+                && product.ProductType != ProductType.PackagingForMulticertificate
+                && product.ProductType != ProductType.Multicertificate
+                && product.ProductType != ProductType.ElectronicMulticertificate;
+    }
+}
+
 
 <div class="order-summary-content">
     @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.OrderSummaryContentBefore, additionalData = Model })
@@ -165,7 +182,9 @@
                                 </td>
                                 <td class="quantity">
                                     <label class="td-title" for="itemquantity@(item.Id)">@T("ShoppingCart.Quantity"):</label>
-                                    @if (Model.IsEditable)
+
+                                    @* HOHOImprove *@
+                                    @if (Model.IsEditable && IsQuantityEditAlloved(item.ProductId).Result)
                                     {
                                         if (item.AllowedQuantities.Count > 0)
                                         {
@@ -262,7 +281,7 @@
                         <button type="submit" name="updatecart" id="updatecart" class="button-2 update-cart-button" style="display: none;">@T("ShoppingCart.UpdateCart")</button>
 
                         <button type="submit" name="continueshopping" class="button-2 continue-shopping-button">@T("ShoppingCart.ContinueShopping")</button>
-                        @await Component.InvokeAsync(typeof(ShoppingCartEstimateShippingViewComponent))
+                        @* @await Component.InvokeAsync(typeof(ShoppingCartEstimateShippingViewComponent)) *@
                     </div>
                 }
                 @if (Model.IsEditable)

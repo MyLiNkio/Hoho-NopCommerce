@@ -1,7 +1,9 @@
-﻿using Nop.Core;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using Nop.Core;
 using Nop.Core.Caching;
 using Nop.Core.Domain.Common;
 using Nop.Data;
+using Org.BouncyCastle.Crypto;
 
 namespace Nop.Services.Common;
 
@@ -98,6 +100,27 @@ public partial class GenericAttributeService : IGenericAttributeService
             select ga;
         var attributes = await _shortTermCacheManager.GetAsync(async () => await query.ToListAsync(), NopCommonDefaults.GenericAttributeCacheKey, entityId, keyGroup);
 
+        return attributes;
+    }
+
+    //HOHOImprove
+    /// <summary>
+    /// Get attributes for KeyGroup
+    /// </summary>
+    /// <param name="keyGroup">Key group</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the get attributes
+    /// </returns>
+    public virtual async Task<IList<GenericAttribute>> GetAttributesForKeyGroupAsync(string keyGroup)
+    {
+        var entityId = -1;
+
+        var query = from ga in _genericAttributeRepository.Table
+                    where ga.KeyGroup == keyGroup
+                    select ga;
+
+        var attributes = await _shortTermCacheManager.GetAsync(async () => await query.ToListAsync(), NopCommonDefaults.GenericAttributeCacheKey, entityId, keyGroup);
         return attributes;
     }
 

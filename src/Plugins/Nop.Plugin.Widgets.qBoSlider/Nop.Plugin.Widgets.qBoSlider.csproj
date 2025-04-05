@@ -1,0 +1,178 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup Label="Globals">
+		<SccProjectName>SAK</SccProjectName>
+		<SccProvider>SAK</SccProvider>
+		<SccAuxPath>SAK</SccAuxPath>
+		<SccLocalPath>SAK</SccLocalPath>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Copyright>Copyright © Baroque Team</Copyright>
+		<Company></Company>
+		<Authors>Baroque Team</Authors>
+		<PackageLicenseUrl></PackageLicenseUrl>
+		<PackageProjectUrl></PackageProjectUrl>
+		<RepositoryUrl>https://github.com/iAlexeyProkhorov/qBoSlider</RepositoryUrl>
+		<RepositoryType>Git</RepositoryType>
+		<Version>1.4.3</Version>
+		<OutputPath>..\..\Presentation\Nop.Web\Plugins\Widgets.qBoSlider</OutputPath>
+		<OutDir>$(OutputPath)</OutDir>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<OutputPath>..\..\Presentation\Nop.Web\Plugins\Widgets.qBoSlider</OutputPath>
+		<OutDir>$(OutputPath)</OutDir>
+
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<OutputPath>..\..\Presentation\Nop.Web\Plugins\Widgets.qBoSlider</OutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Data\**" />
+	  <EmbeddedResource Remove="Data\**" />
+	  <None Remove="Data\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="Infrastructure\EfStartUpTask.cs" />
+		<Compile Remove="Infrastructure\qBoSliderContext.cs" />
+		<Compile Remove="Infrastructure\RouteProvider.cs" />
+		<Compile Remove="Mapping\qBoSliderNamesCompatibility.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Remove="Content\js\owl.carousel.min.js" />
+		<None Remove="Views\_ViewImports.cshtml" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Include="Content\js\owl.carousel.min.js">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		  <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</Content>
+		<Content Include="plugin.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Views\Admin\_ViewImports.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Views\Public\_ViewImports.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="Views\_ViewImports.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\..\Presentation\Nop.Web.Framework\Nop.Web.Framework.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Update="Content\css\uni-slider.css">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Content\localization.en-US.xml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Content\css\owl.carousel.min.css">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Content\css\owl.theme.default.min.css">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Content\sample-images\banner1.jpg">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Content\sample-images\banner2.jpg">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Content\sample-images\banner3.jpg">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="LICENSE">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="logo.jpg">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\Configure.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\Slide\AddSlideWidgetZonePopup.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\Slide\Create.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\Slide\Edit.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\Slide\_CreateOrUpdate.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\Slide\_CreateOrUpdate.Info.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\Slide\_CreateOrUpdate.Mappings.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\Slide\_CreateOrUpdate.WidgetZones.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\WidgetZone\AddWidgetZoneSlidePopup.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\WidgetZone\Create.cshtml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\WidgetZone\Edit.cshtml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\WidgetZone\EditWidgetZoneSlidePopup.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\WidgetZone\List.cshtml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\WidgetZone\_CreateOrUpdate.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\WidgetZone\_CreateOrUpdate.Info.cshtml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\WidgetZone\_CreateOrUpdate.Mappings.cshtml">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\WidgetZone\_CreateOrUpdate.Slides.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\Slide\List.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\_qBoLayout.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\_SlideSearch.cshtml">
+		  <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Admin\_WidgetZoneSearch.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+		<None Update="Views\Public\PublicInfo.cshtml">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Content\images\" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="System.Text.Json" Version="9.0.3" />
+	</ItemGroup>
+	<!-- This target execute after "Build" target -->
+	<Target Name="NopTarget" AfterTargets="Build">
+		<!-- Delete unnecessary libraries from plugins path -->
+		<MSBuild Projects="$(MSBuildProjectDirectory)\..\..\Build\ClearPluginAssemblies.proj" Properties="PluginPath=$(MSBuildProjectDirectory)\$(OutDir)" Targets="NopClear" />
+	</Target>
+</Project>

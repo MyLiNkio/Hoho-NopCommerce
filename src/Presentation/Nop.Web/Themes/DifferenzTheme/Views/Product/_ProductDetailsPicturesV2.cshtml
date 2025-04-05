@@ -1,0 +1,175 @@
+﻿@model ProductDetailsModel
+
+@{
+    var bigPictureBlockName = "galery_big_" + Model.Id;
+    var thumbsBlockName = "galery_thumbs_" + Model.Id;
+}
+<div class="product_galery">
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsBeforePictures, additionalData = Model })
+    
+    <div class="gallery-carousel">
+    <div id="@bigPictureBlockName" class="big owl-carousel owl-theme">
+        @foreach (var picture in Model.PictureModels)
+        {
+            <img class="item" src="@picture.ImageUrl" alt="@picture.AlternateText" title="@picture.Title"/>
+        }
+        @*@foreach (var video in Model.VideoModels)
+        {
+            <div style="height:300px; margin: auto 0;">
+                <a class="owl-video" href="@video.VideoUrl"></a>
+            </div>
+        }*@
+        @*<video width="400" controls>
+            <source src="/images/video/M9_L3.mp4" type="video/mp4">
+            Your browser does not support HTML video.
+        </video>*@
+    </div>
+
+    <div class="thumbs_nav">
+
+        @*Custom nuvigation buttons*@
+        <div class="customNavigation prev_next">
+            <a class="prev" style="display:none;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-left">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                <div></div>
+            </a>
+            @if (Model.PictureModels.Count > 1)
+            {
+                <a class="next">
+                    <div></div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </a>
+            }
+        </div>
+
+        @*Thumbnails*@
+        <div id="@thumbsBlockName" class="thumb owl-carousel owl-theme">
+            @foreach (var picture in Model.PictureModels)
+            {
+                <img class="item" src="@picture.ThumbImageUrl" alt="@picture.AlternateText" title="@picture.Title" data-defaultsize="@picture.ImageUrl" data-fullsize="@picture.FullSizeImageUrl" />
+            }
+            @*@foreach (var video in Model.VideoModels)
+            {
+                <iframe class="item iframe-item" src="@video.VideoUrl" frameborder="0" allow="@video.Allow"></iframe>
+            }*@
+        </div>
+    </div>
+
+    <script asp-location="Footer">
+        //function resizeAllIframes() {
+        //    //debugger;
+        //    var iframes = document.querySelectorAll('.iframe-item');
+
+        //    iframes.forEach(function (iframe) {
+        //        //debugger;
+        //        //iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';
+        //        iframe.style.height = '90px';
+        //        alert("set 90px");
+        //    });
+        //}
+
+        //window.addEventListener('resize', resizeAllIframes);
+        //window.addEventListener('DOMContentLoaded', resizeAllIframes);
+
+        $(document).ready(function () {
+            var bigimage = $("#@bigPictureBlockName");
+            var thumbs = $("#@thumbsBlockName");
+            var activeItemClass = 'current';
+
+            bigimage.owlCarousel({
+                video: true,
+                items: 1,
+                margin: 5,
+                slideSpeed: 2000,
+                nav: false,
+                dots: false,
+                loop: true,
+                responsiveRefreshRate: 200,
+            }).on("changed.owl.carousel", syncPosition);
+
+            thumbs.on("initialized.owl.carousel", function () {
+                thumbs.find(".owl-item").eq(0).addClass(activeItemClass);
+            }).owlCarousel({
+                loop: false,
+                margin: 10,
+                nav: false,
+                dots: false,
+                responsive: {
+                    0: {
+                        items: 5
+                    },
+                    600: {
+                        items: 5
+                    },
+                    1000: {
+                        items: 6
+                    }
+                },
+                smartSpeed: 200,
+                slideSpeed: 500,
+                responsiveRefreshRate: 100
+            }).on("click", ".owl-item", function (e) {
+                e.preventDefault();
+                var clickedElement = $(this);
+                clickedElement.parent().find('.' + activeItemClass).removeClass(activeItemClass);
+                clickedElement.addClass(activeItemClass);
+                var number = $(this).index();
+                bigimage.data("owl.carousel").to(number, 300, true);
+            });
+
+            function syncPosition(el) {
+                var count = el.item.count - 1;
+                var current = Math.round(el.item.index - el.item.count / 2 - 0.5);
+
+                if (current < 0) {
+                    current = count;
+                }
+                if (current > count) {
+                    current = 0;
+                }
+
+                thumbs.find(".owl-item").removeClass("current").eq(current).addClass("current");
+
+                var onscreen = thumbs.find(".owl-item.active").length - 1;
+                var start = thumbs.find(".owl-item.active").first().index();
+                var end = thumbs.find(".owl-item.active").last().index();
+
+                if (current > end) {
+                    thumbs.data("owl.carousel").to(current, 100, true);
+                }
+                if (current < start) {
+                    thumbs.data("owl.carousel").to(current - onscreen, 100, true);
+                }
+
+                if (current == 0) {
+                    $(".customNavigation .prev").hide();
+                    //$(".customNavigation .next").show();
+                }
+                else if (current == count) {
+                    //$(".customNavigation .prev").show();
+                    $(".customNavigation .next").hide();
+                }
+                else {
+                    $(".customNavigation .prev").show();
+                    $(".customNavigation .next").show();
+                }
+            }
+
+            $(".customNavigation .next").click(function () {
+                bigimage.trigger('next.owl.carousel');
+            });
+
+            $(".customNavigation .prev").click(function () {
+                bigimage.trigger('prev.owl.carousel');
+            });
+        });
+    </script>
+
+    </div>
+
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsAfterPictures, additionalData = Model })
+</div>

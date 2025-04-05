@@ -1,0 +1,17 @@
+IMPORTANT!!!!! |
+Before do that I kindly recommnd to perform this instruction in testin environment,
+because tables structure cud change and script will not be able to deal with new structre.
+
+
+1. Create MSSql database, check if credentials work (can connect to DB via Dbeaver for example).
+2. Stop site, make DBBackup.
+3. Copy AppSettings.json and plugin.json to a temp folder as reserve copy
+4. Remove AppSettings.json and plugin.json from website
+5. Run website and install without testing data on MS DB.
+6. Copy plugin.json from temp folder to actual site and replace that one which was automatically created.
+    Restart website and check if all expected plugins were installed.
+7. Compare all tables in source DB and destination DB
+8. Open project in D:\Hoho Code\AdditionalProjects\HohoDB_Data_Migration_MySqlToMsSql
+9. Make sure that all credentials in connection strings are correct.
+10. Publish project to web hosting (it will work very quickly there) or run locally.
+11. Start migration.

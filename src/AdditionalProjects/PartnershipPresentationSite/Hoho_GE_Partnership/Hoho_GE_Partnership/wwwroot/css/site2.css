@@ -1,0 +1,272 @@
+﻿* {
+  box-sizing: border-box;
+  color: #000000;
+}
+
+html {
+  font-size: 16px;
+  position: relative;
+  min-height: 100%;
+  color: #000000;
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  margin: 0;
+  /*overflow: hidden;*/
+  color: #000;
+}
+
+button, .button {
+  color: #fff;
+}
+
+h1{
+    font-size: 3em;
+}
+
+h2 {
+  font-size: 2em;
+  margin-bottom: 0.5em;
+}
+
+h3 {
+  font-size: 1.5em;
+  margin-top:0;
+}
+
+.container {
+  align-self: stretch;
+  width: 100%;
+}
+
+.bg_img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.7;
+  z-index: -1;
+}
+
+.presentation .bg_img, .presentation .bg_img_elements {
+  position: fixed;
+}
+
+.bg_img_elements {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.8;
+}
+
+.p_img_item {
+  width: 70%;
+}
+
+
+.top-ribbon {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  background-color: rgba(255,247,44,0.8);
+  /*background-color: rgba(191,214,19,0.8);*/
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+  padding: 5px 15px;
+  margin-top: 50px;
+  float: left;
+  z-index: 999;
+  position: relative;
+  width: 45%;
+  min-width: 400px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+}
+
+h1 {
+    font-size: 42px;
+    font-weight: 200;
+    margin: 0;
+  }
+
+.top-text1 {
+  color: #333868;
+}
+
+.top-text2 {
+  color: #FF2976;
+}
+
+
+.coming {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  bottom: 100px;
+}
+
+  .coming h1 {
+    color: white;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 5px #777;
+  }
+
+
+/* .darken – это класс, который придаёт эффект очков с тёмными стёклами 😎 */
+.darken::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); /* Для регулирования степени затемнения изменяйте значение альфа-канала (0-1) */
+}
+/* Не забывайте установить для элемента с классом .darken относительное позиционирование */
+.darken {
+  position: relative;
+}
+
+
+  .content {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    padding-bottom: 30px;
+  }
+
+.p_content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  z-index: 100;
+  position:relative;
+}
+
+.elements-back {
+  /*min-width: 100%;*/
+  width:100%;
+  height: 100%;
+  position: absolute;
+  /*background-color: #bfd613;*/
+  background-image: url("/img/background.png");
+  background-position: center;
+  /*background-repeat: no-repeat; /* Do not repeat the image */
+  /*background-size: cover; /* Resize the background image to cover the entire container */
+}
+
+.btns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  max-width: 80%;
+  color: #000;
+}
+
+  .btns > button, .btns > .button {
+    text-decoration: none;
+    padding: 10px 30px;
+    border-radius: 12px;
+    font-size: 18px;
+    width: 420px;
+    background-color: rgba(59,64,117,1);
+    border: unset;
+    box-shadow: 0 0 4px 2px rgba(0,0,0,0.2);
+    line-height: 2;
+    text-align: center;
+  }
+
+    .btns > button:hover, .btns > .button:hover {
+      background-color: #bfd613;
+      color: #000;
+    }
+
+.titles {
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  align-items: center;
+  text-align: center;
+  background-color: rgb(256,256,256,0.7);
+  padding: 30px 60px;
+  margin: 30px 10px 0 10px;
+  z-index: 100;
+}
+
+@media all and (min-width: 1435px) {
+  .btns {
+    max-width: 60%;
+  }
+}
+
+@media all and (max-width: 1024px) {
+
+  .p_img_item {
+    width: 100%;
+  }
+    .p_content {
+    padding: 5px 20px;
+    gap: 5px;
+  }
+
+  .titles {
+    padding: 0 30px;
+  }
+}
+
+@media all and (max-width: 520px) {
+  .btns {
+    max-width: 90%;
+  }
+  .content{
+      justify-content:space-evenly;
+  }
+
+  .p_content {
+      padding: 5px;
+  }
+
+    .btns > button {
+    line-height: 1;
+  }
+
+  h1 {
+    font-size: 1.5em;
+  }
+
+  h2 {
+    font-size: 1.3em;
+  }
+
+  h3 {
+    font-size: 1.1em;
+    margin-top: 0;
+  }
+
+  .top-ribbon {
+    width: unset;
+    min-width: unset;
+  }
+
+  .coming{ 
+      bottom: 200px;
+  }
+}

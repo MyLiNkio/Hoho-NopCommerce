@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33723.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nop.Plugin.Widgets.qBoSlider", "Nop.Plugin.Widgets.qBoSlider.csproj", "{9978B382-0BCD-4621-B6B5-52E0E3B5F464}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nop.Web.Framework", "..\..\Presentation\Nop.Web.Framework\Nop.Web.Framework.csproj", "{0D04F426-FD9A-48F6-917A-FD2C82A21042}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9978B382-0BCD-4621-B6B5-52E0E3B5F464}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9978B382-0BCD-4621-B6B5-52E0E3B5F464}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9978B382-0BCD-4621-B6B5-52E0E3B5F464}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9978B382-0BCD-4621-B6B5-52E0E3B5F464}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D04F426-FD9A-48F6-917A-FD2C82A21042}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D04F426-FD9A-48F6-917A-FD2C82A21042}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D04F426-FD9A-48F6-917A-FD2C82A21042}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D04F426-FD9A-48F6-917A-FD2C82A21042}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

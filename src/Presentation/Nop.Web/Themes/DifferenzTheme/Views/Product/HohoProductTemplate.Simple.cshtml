@@ -1,0 +1,370 @@
+﻿@model ProductDetailsModel
+
+@inject Nop.Services.Html.IHtmlFormatter htmlFormatter
+@inject Nop.Core.IWebHelper webHelper
+@inject SeoSettings seoSettings
+
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(!string.IsNullOrEmpty(Model.MetaTitle) ? Model.MetaTitle : Model.Name);
+    //meta
+    NopHtml.AddMetaDescriptionParts(Model.MetaDescription);
+    NopHtml.AddMetaKeywordParts(Model.MetaKeywords);
+    //page class
+    NopHtml.AppendPageCssClassParts("html-product-details-page");
+
+    //canonical URL
+    if (seoSettings.CanonicalUrlsEnabled)
+    {
+        var productUrl = Url.RouteUrl<Product>(new { SeName = Model.SeName }, webHelper.GetCurrentRequestProtocol()).ToLowerInvariant();
+        NopHtml.AddCanonicalUrlParts(productUrl, seoSettings.QueryStringInCanonicalUrlsEnabled);
+    }
+
+    //open graph META tags
+    if (seoSettings.OpenGraphMetaTags)
+    {
+        NopHtml.AddHeadCustomParts("<meta property=\"og:type\" content=\"product\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:title\" content=\"" + Html.Encode(Model.Name) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:description\" content=\"" + Html.Encode(htmlFormatter.StripTags(Model.MetaDescription)) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:image\" content=\"" + Model.DefaultPictureModel.ImageUrl + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:image:url\" content=\"" + Model.DefaultPictureModel.ImageUrl + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:url\" content=\"" + webHelper.GetThisPageUrl(false) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"og:site_name\" content=\"" + Html.Encode(Model.CurrentStoreName) + "\" />");
+    }
+
+    //Twitter META tags
+    if (seoSettings.TwitterMetaTags)
+    {
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:card\" content=\"summary\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:site\" content=\"" + Html.Encode(Model.CurrentStoreName) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:title\" content=\"" + Html.Encode(Model.Name) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:description\" content=\"" + Html.Encode(htmlFormatter.StripTags(Model.MetaDescription)) + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:image\" content=\"" + Model.DefaultPictureModel.ImageUrl + "\" />");
+        NopHtml.AddHeadCustomParts("<meta property=\"twitter:url\" content=\"" + webHelper.GetThisPageUrl(false) + "\" />");
+    }
+}
+<!--product breadcrumb-->
+@section Breadcrumb
+{
+    @await Html.PartialAsync("_ProductBreadcrumb", Model.Breadcrumb)
+}
+@await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsAfterBreadcrumb, additionalData = Model })
+
+<div id="scrollto0" class="page product-details-page">
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsTop, additionalData = Model })
+    <form asp-route="Product" asp-route-sename="@Model.SeName" method="post" id="product-details-form">
+        @if (Model.AddToCart.UpdatedShoppingCartItemId > 0)
+        {
+            <input asp-for="AddToCart.UpdatedShoppingCartItemId" type="hidden" />
+        }
+
+        <div class="product_overwiew" data-productid="@Model.Id">
+            @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsEssentialTop, additionalData = Model })
+
+            @await Html.PartialAsync("_ProductDetailsPicturesV2", Model)
+
+            <div class="product_intro">
+                <div class="product_title">
+
+                    @await Html.PartialAsync("_Discontinued", Model)
+
+                    <div class="above-name">
+                        @await Html.PartialAsync("_ProductReviewRaiting", Model.ProductReviewOverview)
+                        @if (!string.IsNullOrWhiteSpace(Model.Sku) && Model.ShowSku)
+                        {
+                            <div class="sku" @(string.IsNullOrWhiteSpace(Model.Sku) ? Html.Raw("style=\"display:none\"") : null)>
+                                <span class="label">@T("Products.Sku"):</span>
+                                <span class="value" id="sku-@Model.Id">@Model.Sku</span>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="name">
+                        <h1>@Model.Name</h1>
+                    </div>
+
+                    <div id="mob-container"></div>
+
+                    <div class="vendor-mini-info hide-on-m">
+                        <div class="vendor">
+                            <span class="value">
+                                <a href="@(Url.RouteUrl<Vendor>(new { SeName = Model.VendorModel.SeName }))">@Model.VendorModel.Name</a>
+                            </span>
+                        </div>
+                    </div>
+
+                    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsOverviewTop, additionalData = Model })
+
+                </div>
+
+                @await Component.InvokeAsync(typeof(DisplayServiceLanguageViewComponent), new { specifications = Model.ProductSpecificationModel })
+
+                <div class="product_short_description">
+                    @Model.ShortDescription
+                </div>
+
+                <div class="overview_details">
+                    <!--attributes-->
+                    @{
+                        var dataDictAttributes = new ViewDataDictionary(ViewData);
+                        dataDictAttributes.TemplateInfo.HtmlFieldPrefix = $"attributes_{Model.Id}";
+                        @await Html.PartialAsync("_ProductAttributes", Model, dataDictAttributes)
+                    }
+
+                    <div class="product_panel">
+                        <div class="prices">
+                            @if (!string.IsNullOrWhiteSpace(Model.ProductPrice.OldPrice))
+                            {
+                                @*old price*@
+                                <div class="old-product-price">
+                                    <span>@T("Products.Price.OldPrice"):</span>
+                                    <span>@Model.ProductPrice.OldPrice</span>
+                                </div>
+                            }
+                            <div class="@if (string.IsNullOrWhiteSpace(Model.ProductPrice.PriceWithDiscount))
+                                 {
+                                        <text>product-price</text>
+                                 }
+                                 else
+                                 {
+                                     <text>non-discounted-price</text>
+                                 }">
+                                @if (!string.IsNullOrWhiteSpace(Model.ProductPrice.OldPrice) || !string.IsNullOrWhiteSpace(Model.ProductPrice.PriceWithDiscount))
+                                {
+                                    @*display "Price:" label if we have old price or discounted one*@
+                                            <label for="price-value-@(Model.ProductPrice.ProductId)">@T("Products.Price"):</label>
+                                }
+                                else
+                                {
+                                            <label for="price-value-@(Model.ProductPrice.ProductId)">@T("Products.Price"):</label>
+                                }
+                                @*render price*@
+                                <span @if (string.IsNullOrWhiteSpace(Model.ProductPrice.PriceWithDiscount))
+                                {
+                                    <text> id="price-value-@(Model.ProductPrice.ProductId)" class="price-value-@(Model.ProductPrice.ProductId)" </text>
+                                }
+                                else
+                                {
+                                    <text>class="the-old-price"</text>
+                                }
+                                >
+                                    @Html.Raw(Model.ProductPrice.Price)
+                                </span>
+                            </div>
+                            @if (!string.IsNullOrWhiteSpace(Model.ProductPrice.PriceWithDiscount))
+                            {
+                                @*discounted price*@
+                                <div class="product-price discounted-price">
+                                    <span>@T("Products.Price.WithDiscount"):</span>
+                                    <span class="price-value-@(Model.ProductPrice.ProductId)">
+                                        @Html.Raw(Model.ProductPrice.PriceWithDiscount)
+                                    </span>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="product_panel_btns">
+
+                            @if (!Model.AddToCart.DisableWishlistButton)
+                            {
+                                <button type="button" id="add-to-wishlist-button-@Model.AddToCart.ProductId" class="product_wish_btn" data-productid="@Model.AddToCart.ProductId" onclick="AjaxCart.addproducttocart_details('@Url.RouteUrl("AddProductToCart-Details", new {productId = Model.AddToCart.ProductId, shoppingCartTypeId = (int) ShoppingCartType.Wishlist})', '#product-details-form');return false;">
+                                    <span>
+                                        <svg width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M19.3095 3.14008L19.3098 3.14033C19.7511 3.58143 20.1012 4.10517 20.34 4.68161C20.5789 5.25805 20.7018 5.87591 20.7018 6.49987C20.7018 7.12384 20.5789 7.74169 20.34 8.31813C20.1012 8.89458 19.7511 9.41831 19.3098 9.85942L19.3097 9.85954L18.2497 10.9195L11 18.1692L3.75033 10.9195L2.69033 9.85954C1.79929 8.9685 1.29871 7.75999 1.29871 6.49987C1.29871 5.23975 1.79929 4.03124 2.69033 3.1402C3.58137 2.24916 4.78988 1.74858 6.05 1.74858C7.31012 1.74858 8.51863 2.24916 9.40967 3.1402L10.4697 4.2002C10.7626 4.4931 11.2374 4.4931 11.5303 4.2002L12.5903 3.1402L12.5905 3.14008C13.0316 2.69876 13.5553 2.34868 14.1317 2.10983C14.7082 1.87098 15.326 1.74805 15.95 1.74805C16.574 1.74805 17.1918 1.87098 17.7683 2.10983C18.3447 2.34868 18.8684 2.69876 19.3095 3.14008Z" stroke="#D40404" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </span>
+                                </button>
+                            }
+
+                            @if (!Model.AddToCart.DisableBuyButton)
+                            {
+                                var addToCartText = "";
+                                if (Model.AddToCart.UpdatedShoppingCartItemId > 0 && Model.AddToCart.UpdateShoppingCartItemType.HasValue && Model.AddToCart.UpdateShoppingCartItemType.Value == ShoppingCartType.ShoppingCart)
+                                {
+                                    addToCartText = T("ShoppingCart.AddToCart.Update").Text;
+                                }
+                                else
+                                {
+                                    addToCartText = T("ShoppingCart.AddToCart").Text;
+                                    if (Model.IsRental)
+                                    {
+                                        addToCartText = T("ShoppingCart.Rent").Text;
+                                    }
+                                }
+                                <button type="button" id="add-to-cart-button-@Model.AddToCart.ProductId" class="button-1 add-to-cart-button" data-productid="@Model.AddToCart.ProductId" onclick="AjaxCart.addproducttocart_details('@Url.RouteUrl("AddProductToCart-Details", new {productId = Model.AddToCart.ProductId, shoppingCartTypeId = (int) ShoppingCartType.ShoppingCart})', '#product-details-form');return false;">
+                                    @addToCartText
+                                </button>
+                            }
+                        </div>
+                    </div>
+
+                    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsOverviewBottom, additionalData = Model })
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsEssentialBottom, additionalData = Model })
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsBeforeCollateral, additionalData = Model })
+
+    <div id="desk-container">
+        <div id="pos_control_element"></div>
+        <div id="overview_nav" class="product_item_box unsticked">
+            <div class="product_item_nav">
+                <div class="container">
+                    <div class="product_item_nav_in">
+                        <ul class="product_nav nav navbar-nav">
+                            <li><a href="#scrollto0" class="scrollToElement active">@T("Products.Photos")</a></li>
+                            <li><a href="#description" class="scrollToElement">@T("Products.Description")</a></li>
+                            <li><a href="#places" class="scrollToElement">@T("Products.Locations")</a></li>
+                            @*<li><a href="#faq" class="scrollToElement">@T("Products.faq")</a></li>*@
+                            @if (Model.ProductReviewOverview.AllowCustomerReviews)
+                            {
+                                <li><a href="#reviews" class="scrollToElement">@T("Products.Reviews")</a></li>
+                            }
+                            @*<li><a href="#howworks" class="scrollToElement">@T("Products.HowDoesItWork")</a></li>*@
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script asp-location="Footer">
+        $(document).ready(function () {
+            var fixedElement = $('#overview_nav');
+            var controllElement = $('#pos_control_element');
+            var description = $('#description');
+            var offsetCorrection = fixedElement.height();
+
+            function reInit() {
+                fixedElement = $('#overview_nav');
+                controllElement = $('#pos_control_element');
+                description = $('#description');
+                offsetCorrection = fixedElement.height();
+            }
+
+            if ($(document).scrollTop() > description.offset().top) {
+                //alert($(document).scrollTop() > description.offset().top);
+                fixedElement.removeClass('unsticked').addClass('sticked');
+            }
+
+            // Initial check
+            moveElements();
+
+            // Check on resize
+            $(window).resize(function () {
+                moveElements();
+            });
+
+            $(window).scroll(function () {
+                var scrollPos = $(document).scrollTop();
+                var controlPos = controllElement.offset().top;
+                if (scrollPos >= controlPos) {
+                    fixedElement.removeClass('unsticked').addClass('sticked');
+                } else {
+                    fixedElement.removeClass('sticked').addClass('unsticked');
+                }
+            });
+
+            // Smooth scroll for all elements with the 'scrollToElement' class
+            $('.scrollToElement').click(function (e) {
+                e.preventDefault();
+                $('.scrollToElement').removeClass('active');
+                $(e.target).addClass('active');
+
+                var targetId = this.hash.substring(1); // Получаем id из хэша
+                var targetElement = $('#' + targetId);
+
+                if (targetElement.length) {
+                    var controlPos = controllElement.offset().top;
+
+                    var correctionShift = 75;
+                    if ($(window).width() < 1000) {
+                        correctionShift = 25;
+                    }
+
+                    var offset = targetElement.offset().top - correctionShift;
+
+                    if (fixedElement.hasClass('unsticked')) {
+                        offset -= offsetCorrection;
+                    }
+
+                    if (targetId == 'scrollto0') { offset = 0; }
+
+                    $('html, body').animate({
+                        scrollTop: offset
+                    }, 500);
+
+                    // Check the position of the target element and apply the appropriate class to #overview_nav
+                    if (targetElement.offset().top >= controlPos) {
+                        fixedElement.removeClass('unsticked').addClass('sticked');
+                    } else {
+                        fixedElement.removeClass('sticked').addClass('unsticked');
+                    }
+                }
+            });
+
+            function moveElements() {
+                let deskContainer = $('#desk-container');
+                let mobContainer = $('#mob-container');
+
+                if ($(window).width() < 1000) {
+                    controllElement.detach(deskContainer).appendTo(mobContainer);
+                    fixedElement.detach(deskContainer).appendTo(mobContainer);
+                }
+                else {
+                    controllElement.detach(mobContainer).appendTo(deskContainer);
+                    fixedElement.detach(mobContainer).appendTo(deskContainer);
+                }
+                reInit();
+            }
+        });
+    </script>
+
+    <div id="description" class="product-details-section">
+        <h2>@T("Products.Description")</h2>
+        <div class="product-description">
+            @Html.Raw(Model.FullDescription)
+        </div>
+    </div>
+
+    <div id="places" class="product-details-section">
+        <h2>@T("Products.Locations")</h2>
+        <div class="product-vendor-details">
+            @await Html.PartialAsync("_ProductDetails_VendorInfo", Model)
+        </div>
+    </div>
+
+    @if (Model.ProductReviewOverview.AllowCustomerReviews)
+    {
+        <div id="reviews" class="product-details-section">
+            <h2>@T("Products.Reviews")</h2>
+            <div class="product-description">
+                @await Html.PartialAsync("_ProductDetails_Reviews", Model)
+            </div>
+        </div>
+    }
+
+    @*<div id="howworks" class="product-details-section">
+    <h2>@T("Products.HowDoesItWork")</h2>
+    <div class="product-description">
+    @Html.Raw(Model.FullDescription)
+    </div>
+    </div>*@
+
+
+
+
+    <div class="related-products-grid product-grid">
+        <div class="container product-grid home-page-product-grid">
+            @await Component.InvokeAsync("ProductsAlsoPurchased", new { productId = Model.Id })
+
+            @await Component.InvokeAsync("RelatedProducts", new { productId = Model.Id })
+        </div>
+    </div>
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.ProductDetailsBottom, additionalData = Model })
+</div>

@@ -135,7 +135,8 @@ public partial class ProductController : BasePublicController
         if (!_catalogSettings.ProductReviewPossibleOnlyAfterPurchasing)
             return;
 
-        var hasCompletedOrders = product.ProductType == ProductType.SimpleProduct
+        //HOHOImprove
+        var hasCompletedOrders = product.ProductType != ProductType.GroupedProduct
             ? await HasCompletedOrdersAsync(product)
             : await (await _productService.GetAssociatedProductsAsync(product.Id)).AnyAwaitAsync(HasCompletedOrdersAsync);
 

@@ -1,0 +1,45 @@
+﻿@using Nop.Web.Factories
+@inject ITopicModelFactory _topicModelFactory
+
+@inject IWorkContext workContext
+
+@{
+    var systemName = "FAQ_mainpage_block";
+    var themeName = await themeContext.GetWorkingThemeNameAsync();
+    var model = await _topicModelFactory.PrepareTopicModelBySystemNameAsync(systemName);
+    if (model == null)
+        return;
+
+    NopHtml.AppendCssFileParts($"~/Themes/{themeName}/Content/css/accordion-base.css");
+    var sectionIdentify = "faq-main-section";
+}
+
+<div class="faq_widjet">
+    <div class="faq_container">
+        <div class="faq_content">
+            <div class="title">
+                <h1>@Html.Raw(model.Title)</h1>
+            </div>
+            <div id="@sectionIdentify" class="resp-accordion">
+                @Html.Raw(model.Body)
+            </div>
+        </div>
+    </div>
+</div>
+
+<script asp-location="Footer">
+    $(document).ready(function () {
+        $('#@sectionIdentify .accordion-item-header').click(function () {
+            // Toggle content visibility
+            $(this).next('.accordion-item-content').slideToggle();
+
+
+            // Toggle 'expanded' class on the parent accordion item
+            $(this).parent('.resp-accordion-item').toggleClass('expanded');
+
+            //Optionally close other items if needed
+            $('.accordion-item-content').not($(this).next()).slideUp();
+            $('.resp-accordion-item').not($(this).parent()).removeClass('expanded');
+        });
+    });
+</script>

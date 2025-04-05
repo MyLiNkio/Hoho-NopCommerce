@@ -1,0 +1,66 @@
+﻿@*//MoveRedeem*@
+@model CheckCertificateModel
+
+
+
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.Redeem.Check").Text);
+
+    //page class
+    NopHtml.AppendPageCssClassParts("html-check-certificate-page");
+}
+
+<div class="page activation-page">
+    <div class="page-up-margin">
+        <div class="page-title title">
+            <h1>@T("Redeem.Check.PageTitle")</h1>
+        </div>
+
+        <div class="page-body">
+            @await Html.PartialAsync("~/Nop.Plugin.Customization.CertificatesManager/Views/Shared/_ActivationSteps.cshtml", 1)
+
+            <div class="enter-card-info">
+                <div class="enter-card-info">
+                    <div>
+                        @if (!Model.Status.HasValue)
+                        {
+                            <h2>@T("Redeem.Check.CallToAction")</h2>
+                        }
+                        else if (Model.Status == CertificateDisplayStatus.Expired)
+                        {
+                            <p class="alert">@T("Redeem.Check.CardExpired", Model.ValidationDate.Value.ToShortDateString())</p>
+                        }
+                        else if (Model.Status == CertificateDisplayStatus.Redeemed)
+                        {
+                            <p class="alert">@T("Redeem.Check.CardRedeemed", Model.ValidationDate.Value.ToShortDateString())</p>
+                        }
+                        else if (Model.Status == CertificateDisplayStatus.Blocked)
+                        {
+                            <p class="alert">@T("Redeem.Check.CardBlocked", Model.ValidationDate.Value.ToShortDateString())</p>
+                        }
+                        else
+                        {
+                            <p class="alert">@T("Redeem.Check.CardNotFound")</p>
+                        }
+                    </div>
+
+                    @* @if (!Model.Status.HasValue || Model.Status == CertificateDisplayStatus.NotFound) *@
+                    @* { *@
+                        <form asp-route="CheckCertificate" method="post" autocomplete="off">
+                            <div asp-validation-summary="ModelOnly" class="message-error"></div>
+                            <div class="fieldset">
+                                <div class="form-fields">
+                                    @await Html.PartialAsync("~/Nop.Plugin.Customization.CertificatesManager/Views/Shared/_CheckCardNumberField.cshtml", Model)
+                                </div>
+                                <button type="submit" class="button-1 register-next-step-button">@T("Redeem.Check.Button")</button>
+                            </div>
+                        </form>
+                    @* } *@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

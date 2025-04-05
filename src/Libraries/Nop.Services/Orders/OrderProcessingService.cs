@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text.Json; //HOHOImprove
 using Nop.Core;
 using Nop.Core.Caching;
 using Nop.Core.Domain.Catalog;
@@ -281,6 +282,9 @@ public partial class OrderProcessingService : IOrderProcessingService
         var currentCurrency = await _workContext.GetWorkingCurrencyAsync();
         await PrepareAndValidateCustomerAsync(details, processPaymentRequest, currentCurrency);
         await PrepareAndValidateShoppingCartAndCheckoutAttributesAsync(details, processPaymentRequest, currentCurrency);
+        //HOHOImprove
+        await PreparePackagingToOrder(details, processPaymentRequest.StoreId);
+
         await PrepareAndValidateBillingAddressAsync(details);
         await PrepareAndValidateShippingInfoAsync(details, processPaymentRequest);
         await PrepareAndValidateTotalsAsync(details, processPaymentRequest);
@@ -437,8 +441,9 @@ public partial class OrderProcessingService : IOrderProcessingService
 
                 var shippingAddress = await _customerService.GetCustomerShippingAddressAsync(details.Customer);
 
-                if (!CommonHelper.IsValidEmail(shippingAddress?.Email))
-                    throw new NopException("Email is not valid");
+                //HOHOImprove
+                //if (!CommonHelper.IsValidEmail(shippingAddress?.Email))
+                //    throw new NopException("Email is not valid");
 
                 //clone shipping address
                 details.ShippingAddress = _addressService.CloneAddress(shippingAddress);
@@ -534,6 +539,27 @@ public partial class OrderProcessingService : IOrderProcessingService
 
         if (await _countryService.GetCountryByAddressAsync(details.BillingAddress) is Country billingCountry && !billingCountry.AllowsBilling)
             throw new NopException($"Country '{billingCountry.Name}' is not allowed for billing");
+    }
+
+    //HOHOImprove
+    /// Prepare and add packaging product to the order list
+    /// </summary>
+    /// <param name="details">PlaceOrder container</param>
+    /// <returns>A task that represents the asynchronous operation</returns>
+    /// <exception cref="NopException">Validation problems</exception>
+    protected virtual async Task PreparePackagingToOrder(PlaceOrderContainer details, int storeId)
+    {
+        var packageCartItemData = await _genericAttributeService.GetAttributeAsync<string>(details.Customer, "CheckoutPackageCartItem", storeId);
+
+        if (string.IsNullOrEmpty(packageCartItemData))
+            return;
+
+        var packageCartItem = JsonSerializer.Deserialize<ShoppingCartItem>(packageCartItemData);
+        if (packageCartItem == null)
+            throw new NopException("Can't parse packaging product cart item data from generalized attribute");
+
+        details.Cart.Add(packageCartItem);
+        await _genericAttributeService.SaveAttributeAsync<string>(details.Customer, "CheckoutPackageCartItem", null, storeId);
     }
 
     /// <summary>
@@ -3424,4 +3450,45 @@ public partial class OrderProcessingService : IOrderProcessingService
     }
 
     #endregion
+
+    //HOHOImprove
+    public virtual async Task SetOrderStatusToIncomplete(Order order)
+    {
+        if (order == null)
+            throw new ArgumentNullException(nameof(order));
+
+        if (!CanSetIncompleteStatus(order))
+            throw new NopException("Can't set incomplete status");
+
+        order.OrderStatus = OrderStatus.Incomplete;
+        await _orderService.UpdateOrderAsync(order);
+
+        //add a note
+        await AddOrderNoteAsync(order, "Order was set to Incomplete status");
+    }
+
+    //HOHOImprove
+    /// <summary>
+    /// Gets a value indicating whether order can be marked as Incomplete
+    /// </summary>
+    /// <param name="order">Order</param>
+    /// <returns>A value indicating whether order can be marked as paid</returns>
+    public virtual bool CanSetIncompleteStatus(Order order)
+    {
+        if (order == null)
+            throw new ArgumentNullException(nameof(order));
+
+        if (order.OrderStatus == OrderStatus.Incomplete || order.OrderStatus == OrderStatus.Complete || order.OrderStatus == OrderStatus.Cancelled)
+            return false;
+
+        if (order.PaymentStatus == PaymentStatus.Paid ||
+            order.PaymentStatus == PaymentStatus.Refunded ||
+            order.PaymentStatus == PaymentStatus.PartiallyRefunded ||
+            order.PaymentStatus == PaymentStatus.Voided ||
+            order.PaymentStatus == PaymentStatus.Authorized)
+            return false;
+
+        return true;
+    }
+
 }

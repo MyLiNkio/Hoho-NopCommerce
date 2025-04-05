@@ -1,0 +1,37 @@
+﻿.flx--row{
+    display: flex;
+}
+
+.flx--row{
+    display: flex;
+}
+
+.flx--column{
+    display: flex;
+    flex-direction: column;
+}
+
+.flx--just--center{
+    justify-content: center;
+}
+
+.flx--just--sp-btw{
+    justify-content: space-between;
+}
+
+.flx--align--center{
+    align-items: center;
+}
+
+.flx--just--sp-btw {
+    justify-content: space-between;
+}
+
+.flx--wrap{
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
+.flx--fix-size{
+    flex: 0 0 auto;
+}

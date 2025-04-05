@@ -1,0 +1,43 @@
+﻿@model IList<Nop.Plugin.Hoho.ExternalAPIs.Model.ApiKeyModel>
+
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="content-header clearfix">
+    <h1>API Keys</h1>
+</div>
+
+<section class="content">
+    <p>
+        <a href="@Url.Action("Create")" class="btn btn-primary">Create New API Key</a>
+    </p>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Created On</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var apiKey in Model)
+            {
+                <tr>
+                    <td>@apiKey.Name</td>
+                    <td>@apiKey.Description</td>
+                    <td>@(apiKey.IsEnabled ? "Enabled" : "Disabled")</td>
+                    <td>@apiKey.CreatedOnUtc.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                    <td>
+                        <a href="@Url.Action("View", new { id = apiKey.Id })" class="btn btn-warning">View</a>
+                        <a href="@Url.Action("Edit", new { id = apiKey.Id })" class="btn btn-warning">Edit</a>
+                        <a href="@Url.Action("Delete", new { id = apiKey.Id })" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</section>

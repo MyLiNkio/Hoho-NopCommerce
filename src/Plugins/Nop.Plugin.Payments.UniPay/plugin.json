@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Payment methods",
+  "FriendlyName": "UniPay",
+  "SystemName": "Payments.UniPay",
+  "Version": "0.21",
+  "SupportedVersions": [ "4.80" ],
+  "Author": "Lyova team",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Payments.UniPay.dll",
+  "Description": "UniPay Platform"
+}

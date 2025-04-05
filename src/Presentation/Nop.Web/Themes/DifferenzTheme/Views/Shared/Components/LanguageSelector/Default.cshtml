@@ -1,0 +1,32 @@
+﻿@model LanguageSelectorModel
+
+@inject Nop.Core.IWebHelper webHelper
+
+@if (Model.AvailableLanguages.Count > 1)
+{
+    <div class="language-selector dd-element">
+        @{
+            var returnUrl = webHelper.GetRawUrl(Context.Request);
+            var selectedItem = Model.AvailableLanguages.FirstOrDefault(x => x.Id == Model.CurrentLanguageId);
+            Model.AvailableLanguages.Remove(selectedItem);
+        }
+
+        <div class="dd-element__btn head-nav-icon">
+            <img class="lang-img" src="@Url.Content("~/images/flags/" + @selectedItem.FlagImageFileName)">
+        </div>
+
+        <div class="dd-element__content">
+            <ul>
+                @foreach (var lang in Model.AvailableLanguages)
+                {
+                    <li>
+                        <a class="lang-link" href="@Url.RouteUrl("ChangeLanguage", new { langid = lang.Id, returnUrl }, webHelper.GetCurrentRequestProtocol())">
+                            <img class="lang-img" src="@Url.Content("~/images/flags/" + @lang.FlagImageFileName)">
+                            <span>@lang.Name</span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+}

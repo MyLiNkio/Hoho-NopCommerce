@@ -35,6 +35,9 @@ public partial record ProductModel : BaseNopEntityModel,
         AvailableWarehouses = new List<SelectListItem>();
         ProductsTypesSupportedByProductTemplates = new Dictionary<int, IList<SelectListItem>>();
 
+        //HOHOImprove
+        AvailableProductTypes = new List<SelectListItem>();
+
         AvailableVendors = new List<SelectListItem>();
 
         SelectedStoreIds = new List<int>();
@@ -78,6 +81,11 @@ public partial record ProductModel : BaseNopEntityModel,
 
     [NopResourceDisplayName("Admin.Catalog.Products.Fields.ProductType")]
     public int ProductTypeId { get; set; }
+
+
+    //HOHOImprove
+    public IList<SelectListItem> AvailableProductTypes { get; set; }
+
 
     [NopResourceDisplayName("Admin.Catalog.Products.Fields.ProductType")]
     public string ProductTypeName { get; set; }

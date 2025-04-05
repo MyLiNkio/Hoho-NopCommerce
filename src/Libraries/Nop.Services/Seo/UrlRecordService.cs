@@ -1084,7 +1084,43 @@ public partial class UrlRecordService : IUrlRecordService
             { '\u0490', "G" }, // Ukraine CAPITAL LETTER Ґ
             { '\u0491', "g" }, // Ukraine SMALL LETTER ґ
             { '\u040E', "U" }, // Byelorussian CAPITAL LETTER Ў
-            { '\u045E', "u" } // Byelorussian SMALL LETTER ў
+            { '\u045E', "u" }, // Byelorussian SMALL LETTER ў
+
+            //HOHOImprovement
+            //Georgian letters transliteration rules
+            { '\u10D0', "a" }, // ა
+            { '\u10D1', "b" }, // ბ
+            { '\u10D2', "g" }, // გ
+            { '\u10D3', "d" }, // დ
+            { '\u10D4', "e" }, // ე
+            { '\u10D5', "v" }, // ვ
+            { '\u10D6', "z" }, // ზ
+            { '\u10D7', "t" }, // თ
+            { '\u10D8', "i" }, // ი
+            { '\u10D9', "k" }, // კ
+            { '\u10DA', "l" }, // ლ
+            { '\u10DB', "m" }, // მ
+            { '\u10DC', "n" }, // ნ
+            { '\u10DD', "o" }, // ო
+            { '\u10DE', "p" }, // პ
+            { '\u10DF', "zh" }, // ჟ
+            { '\u10E0', "r" }, // რ
+            { '\u10E1', "s" }, // ს
+            { '\u10E2', "t" }, // ტ
+            { '\u10E3', "u" }, // უ
+            { '\u10E4', "ph" }, // ფ
+            { '\u10E5', "q" }, // ქ
+            { '\u10E6', "gh" }, // ღ
+            { '\u10E7', "k" }, // ყ
+            { '\u10E8', "sh" }, // შ
+            { '\u10E9', "ch" }, // ჩ
+            { '\u10EA', "ts" }, // ც
+            { '\u10EB', "dz" }, // ძ
+            { '\u10EC', "ts" }, // წ
+            { '\u10ED', "ch" }, // ჭ
+            { '\u10EE', "kh" }, // ხ
+            { '\u10EF', "j" }, // ჯ
+            { '\u10F0', "h" }, // ჰ
         };
     }
 

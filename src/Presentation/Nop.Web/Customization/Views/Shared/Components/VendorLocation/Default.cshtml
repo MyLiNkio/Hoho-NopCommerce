@@ -1,0 +1,112 @@
+﻿@using Nop.Core.Domain.Customers
+@using Nop.Core.Domain.Media
+@using Nop.Services.Common
+@using Nop.Services.Media
+@using Nop.Services.Vendors
+@using Nop.Web.Factories
+@model int
+
+@inject IVendorService _vendorService
+@inject IPictureService _pictureService
+@inject IGenericAttributeService _genericAttributeService
+@inject MediaSettings _mediaSettings
+@inject IVendorModelFactory _vendorModelFactory
+
+@{
+    var vendor = await _vendorService.GetVendorByIdAsync(Model);
+    @if (vendor == null || vendor.Deleted || !vendor.Active)
+        return;
+
+    var vendorAttributes = (await _vendorModelFactory.GetVendorModelAttributesAsync(vendor)).
+           ToDictionary(x => x.Name.ToString(), x =>
+           {
+               if (x.AttributeControlType == AttributeControlType.TextBox && x.DefaultValue != null)
+               {
+                   return x.DefaultValue;
+               }
+
+               if (x.AttributeControlType == AttributeControlType.Checkboxes && x.Values.Any(x => x.IsPreSelected))
+               {
+                   return string.Join(", ", x.Values.Where(x => x.IsPreSelected).Select(x => x.Name).ToArray());
+               }
+
+               return null;
+           });
+
+    if (!vendorAttributes.Any(x => x.Value != null))
+        return;
+
+    vendorAttributes.TryGetValue("SP_WorkingHours", out var workingHours);
+    vendorAttributes.TryGetValue("SP_WorkingDays", out var workingDays);
+    vendorAttributes.TryGetValue("SP_Address", out var address);
+    vendorAttributes.TryGetValue("SP_GoogleMapShortLink", out var gMapLink);
+    vendorAttributes.TryGetValue("SP_GoogleMapIFrame", out var gMapIFrame);
+    vendorAttributes.TryGetValue("SP_ContactPhone", out var contactPhone);
+    vendorAttributes.TryGetValue("SP_WebSiteLink", out var webLink);
+    vendorAttributes.TryGetValue("SP_InstagramLink", out var inLink);
+    vendorAttributes.TryGetValue("SP_FacebookLink", out var fbLink);
+}
+
+
+<div class="vendor-description-more">
+    <div class="vendor-d-m-details">
+        <div class="vendor-contacts">
+            <ul class="contacts">
+                <li>
+                    <img id="svg_icon" class="icon" src="/themes/differenztheme/content/images/thumbs/new/icons/clock2.svg">
+                    <p>
+                        <text>@workingHours</text>
+                        @if (!string.IsNullOrWhiteSpace(workingDays))
+                        {
+                            <text> (@workingDays)</text>
+                        }
+                    </p>
+                </li>
+                <li>
+                    <img id="svg_icon" class="icon" src="/themes/differenztheme/content/images/thumbs/new/icons/mobile.svg">
+                    <p>@contactPhone</p>
+                </li>
+                <li>
+                    <img id="svg_icon" class="icon" src="/themes/differenztheme/content/images/thumbs/new/icons/map-pin.svg">
+                    <p>@address <a href="@gMapLink" target="_blank" rel="noopener noreferrer">@T("Product.Vendor.GetDir")</a></p>
+                </li>
+            </ul>
+
+            <ul class="links">
+                @if (!string.IsNullOrWhiteSpace(webLink))
+                {
+                    <li>
+                        <a href="@webLink" target="_blank" rel="noopener noreferrer">
+                            <div class="social-share">
+                                <img id="svg_icon" src="/themes/differenztheme/content/images/thumbs/new/icons/web2.svg">
+                            </div>
+                        </a>
+                    </li>
+                }
+                @if (!string.IsNullOrWhiteSpace(fbLink))
+                {
+                    <li>
+                        <a href="@fbLink" target="_blank" rel="noopener noreferrer">
+                            <div class="social-share">
+                                <img id="svg_icon" src="/themes/differenztheme/content/images/thumbs/new/icons/fb2.svg">
+                            </div>
+                        </a>
+                    </li>
+                }
+                @if (!string.IsNullOrWhiteSpace(inLink))
+                {
+                    <li>
+                        <a href="@inLink" target="_blank" rel="noopener noreferrer">
+                            <div class="social-share">
+                                <img id="svg_icon" src="/themes/differenztheme/content/images/thumbs/new/icons/insta.svg">
+                            </div>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="vendor-d-m-photo">
+        @Html.Raw(gMapIFrame)
+    </div>
+</div>

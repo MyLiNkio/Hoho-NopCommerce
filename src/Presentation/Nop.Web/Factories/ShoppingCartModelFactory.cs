@@ -396,7 +396,7 @@ public partial class ShoppingCartModelFactory : IShoppingCartModelFactory
         //3. has attribute or gift card?
         //4. visible individually?
         cartItemModel.AllowItemEditing = _shoppingCartSettings.AllowCartItemEditing &&
-                                         product.ProductType == ProductType.SimpleProduct &&
+                                         product.ProductType != ProductType.GroupedProduct && //HOHOImprove
                                          (!string.IsNullOrEmpty(cartItemModel.AttributeInfo) ||
                                           product.IsGiftCard) &&
                                          product.VisibleIndividually;

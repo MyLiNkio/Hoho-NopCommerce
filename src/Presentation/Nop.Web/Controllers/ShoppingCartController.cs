@@ -550,8 +550,9 @@ public partial class ShoppingCartController : BasePublicController
 
         var redirectUrl = await _nopUrlHelper.RouteGenericUrlAsync<Product>(new { SeName = await _urlRecordService.GetSeNameAsync(product) });
 
-        //we can add only simple products
-        if (product.ProductType != ProductType.SimpleProduct)
+        //HOHOImprove
+        //we can't add grouped products
+        if (product.ProductType == ProductType.GroupedProduct)
             return Json(new { redirect = redirectUrl });
 
         //products with "minimum order quantity" more than a specified qty
@@ -724,13 +725,16 @@ public partial class ShoppingCartController : BasePublicController
             });
         }
 
-        //we can add only simple products
-        if (product.ProductType != ProductType.SimpleProduct)
+        //HOHOImprove
+        //we can't add grouped products
+        if (product.ProductType == ProductType.GroupedProduct)
         {
             return Json(new
             {
                 success = false,
-                message = "Only simple products could be added to the cart"
+                //HOHOImprove
+                //message = "Only simple products could be added to the cart"
+                message = "Grouped products can't be added to the cart"
             });
         }
 
@@ -1287,7 +1291,9 @@ public partial class ShoppingCartController : BasePublicController
                                  && _customerSettings.UserRegistrationType == UserRegistrationType.Disabled;
 
         if (anonymousPermissed || !await _customerService.IsGuestAsync(customer))
-            return RedirectToRoute("Checkout");
+            //HOHOImprove
+            //return RedirectToRoute("Checkout");
+            return RedirectToRoute("CheckoutPanel");
 
         var cartProductIds = cart.Select(ci => ci.ProductId).ToArray();
         var downloadableProductsRequireRegistration =

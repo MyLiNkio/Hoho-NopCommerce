@@ -1,0 +1,28 @@
+﻿@*//MoveRedeem*@
+@model int
+
+<div class="cert-check-tabs">
+    <div class="cert-check-tabs__item" data-step-id="1">
+        <p class="step-number">01</p>
+        <p>@T("Redeem.Check.Step01")</p>
+    </div>
+    <span class="cert-check-tabs__arrow"></span>
+    <div class="cert-check-tabs__item" data-step-id="2">
+        <p class="step-number">02</p>
+        <p>@T("Redeem.Check.Step02")</p>
+    </div>
+    <span class="cert-check-tabs__arrow"></span>
+    <div class="cert-check-tabs__item" data-step-id="3">
+        <p class="step-number">03</p>
+        <p>@T("Redeem.Check.Step03")</p>
+    </div>
+</div>
+
+<script asp-location="Footer">
+    $(document).ready(function () {
+        $('[data-step-id="'+@Model+'"]').addClass('active');
+    });
+</script>
+
+
+

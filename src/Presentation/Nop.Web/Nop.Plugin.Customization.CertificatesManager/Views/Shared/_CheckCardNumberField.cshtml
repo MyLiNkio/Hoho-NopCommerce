@@ -1,0 +1,72 @@
+﻿@*//MoveRedeem*@
+@model CheckCertificateModel
+
+<div class="card-data">
+    <div class="card-number inputs">
+        <label asp-for="CertificateNumber" asp-postfix=":"></label>
+        <input asp-for="CertificateNumber" placeholder="XX-XX-XX-XX" oninput="return formatToPattern(event)" maxlength="11" />
+        <nop-required />
+        <span asp-validation-for="CertificateNumber"></span>
+    </div>
+
+    <div class="card-security inputs">
+        <label asp-for="SecurityCode" asp-postfix=":"></label>
+        <input asp-for="SecurityCode" placeholder="XX-XX" oninput="return formatToPattern(event)" maxlength="5" />
+        <nop-required />
+        <span asp-validation-for="SecurityCode"></span>
+    </div>
+</div>
+
+<script asp-location="Footer">
+    var formatToPattern = function (e) {
+        var cardElement = e.target;
+        var pattern = cardElement.getAttribute('placeholder');
+        if (!pattern) return false;
+
+        var value = e.target.value.replace(/-/g, ''); // Remove all '-' characters
+        var formattedValue = '';
+        var patternIndex = 0;
+
+        for (var i = 0; i < value.length; i++) {
+            if (patternIndex >= pattern.length) break; // Stop if the pattern is fully applied
+
+            if (pattern[patternIndex] === '-') {
+                formattedValue += '-'; // Add the '-' from the pattern
+                patternIndex++; // Move to the next position in the pattern
+            }
+
+            if (patternIndex < pattern.length && pattern[patternIndex] === 'X') {
+                formattedValue += value[i]; // Add the current value character
+                patternIndex++; // Move to the next position in the pattern
+            }
+        }
+
+        e.target.value = formattedValue; // Update the input field with the formatted value
+        return true;
+    }
+
+    document.addEventListener("paste", function (e) {
+        var cardElement = e.target;
+        var pastedText = undefined;
+        if (window.clipboardData && window.clipboardData.getData) { // IE
+            pastedText = window.clipboardData.getData('Text');
+        } else if (e.clipboardData && e.clipboardData.getData) {
+            pastedText = e.clipboardData.getData('text/plain');
+        }
+        e.preventDefault();
+
+        var requiredLength = cardElement.getAttribute('maxlength');
+        var pattern = cardElement.getAttribute('placeholder');
+        if (pattern === undefined || requiredLength === undefined) return false;
+        var textToPaste = pastedText.trim().substring(0, requiredLength).replace(/\-*/g, '').replace(/\ */g, '').replace(/\-*/g, '').replace(/\\n/g, '');
+
+        for (var i = 0; i < pattern.length || i < textToPaste.length; i++) {
+            if (pattern[i] == '-' && textToPaste[i] != '-') {
+                textToPaste = [textToPaste.slice(0, i), '-', textToPaste.slice(i)].join('').substring(0, requiredLength);
+            }
+        }
+
+        e.target.value = textToPaste;
+        return false;
+    });
+</script>

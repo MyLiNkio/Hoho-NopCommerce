@@ -1,0 +1,154 @@
+﻿@inject IStoreContext _storeContext
+@inject Nop.Services.Configuration.ISettingService _settingService
+
+@model TopMenuModel
+
+
+@{
+    var specificationIDsInSettings = await _settingService.GetSettingAsync("TopMenu.DisplaySpecificationAttr");
+    var baseCategoryIdSetting = await _settingService.GetSettingAsync("TopMenu.BaseCategoryIdToDisplaySpecificationAttr");
+
+    if (!int.TryParse(baseCategoryIdSetting?.Value.Trim(), out int baseCategoryId))
+        return;
+
+    var baseCategory = Model.Categories.FirstOrDefault(x => x.Id == baseCategoryId);
+    if (baseCategory == null) return;
+
+    var store = await _storeContext.GetCurrentStoreAsync();
+
+    var list = specificationIDsInSettings?.Value.Trim().Split(',').ToList();
+    var specificationIds = new List<int>();
+    foreach (var item in list)
+    {
+        if (int.TryParse(item, out int id))
+            specificationIds.Add(id);
+    }
+}
+
+
+@functions {
+    async Task CategoryLine(TopMenuModel.CategoryLineModel lineModel)
+    {
+        //subcategories
+        var subCategories = lineModel.ResponsiveMobileMenu ?
+        //responsive (all categories)
+        lineModel.Category.SubCategories :
+        //standard design (only categories with "IncludeInTopMenu")
+        lineModel.Category.SubCategories.Where(x => x.IncludeInTopMenu).ToList();
+
+        var itemUrl = subCategories.Any() ? string.Empty : "href=" + Url.RouteUrl<Category>(new { SeName = lineModel.Category.SeName });
+
+        <li>
+            <a @itemUrl class="@Html.Raw(subCategories.Any() ? "has-submenu" : string.Empty)">
+                @lineModel.Category.Name
+                @if (lineModel.Category.NumberOfProducts.HasValue)
+                {
+                    <text> </text>
+                    @T("Categories.TotalProducts", lineModel.Category.NumberOfProducts.Value)
+                }
+                <span id="svg_icon"></span>
+            </a>
+            @{
+                var levelClass = "";
+                if (lineModel.Level == 0)
+                {
+                    levelClass = "first-level";
+                }
+                if (subCategories.Any())
+                {
+                    <ul class="dd_submenu @levelClass">
+                        @foreach (var subCategory in subCategories)
+                        {
+                            var categoryLineModel = new TopMenuModel.CategoryLineModel
+                    {
+                        Category = subCategory,
+                        Level = lineModel.Level + 1,
+                        ResponsiveMobileMenu = lineModel.ResponsiveMobileMenu
+                    };
+                            await CategoryLine(categoryLineModel);
+                        }
+                    </ul>
+                }
+            }
+        </li>
+    }
+}
+
+
+<ul>
+    @foreach (var category in Model.Categories)
+    {
+        <li>
+            <a class="has-submenu">@T("Catalog.ForWho")<span id="svg_icon"></span></a>
+            <ul class="dd_submenu">
+                @{
+                    foreach (var subCategory in category.SubCategories)
+                    {
+                        var categoryLineModel = new TopMenuModel.CategoryLineModel { Category = subCategory };
+                        await CategoryLine(categoryLineModel);
+                    }
+                }
+                @if (category.SubCategories.Count > 1)
+                {
+                    <li class="all-categories">
+                        <a href="@Html.Raw(Url.RouteUrl<Category>(new { SeName = category.SeName }))">
+                            @category.Name
+                            @if (category.NumberOfProducts.HasValue)
+                            {
+                                <text> </text>
+                                @T("Categories.TotalProducts", category.NumberOfProducts.Value)
+                            }
+                            <span id="svg_icon"></span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </li>
+    }
+    @foreach (var specificationId in specificationIds)
+    {
+        @await Component.InvokeAsync(typeof(DisplayTopMenuAttributOptionsViewComponent), new { baseCategoryId = baseCategoryId, displaySpecAttributeId = specificationId })
+    }
+</ul>
+
+@*
+    </div>
+</div>
+*@
+
+
+<script asp-location="Footer">
+    $(document).ready(function () {
+        // Find all <li> elements inside any <ul> with class .dd-slider-menu
+        $('.dd-slider-menu').find('li').on('click', function (event) {
+            event.stopPropagation(); // Prevents the event from bubbling up
+
+            const $clickedItem = $(this);
+
+            // Function to traverse up the ancestors, removing 'active' from sibling branches at each level
+            function deactivateSiblings($element) {
+                const $parent = $element.parent().closest('li'); // Get the closest ancestor <li>
+
+                // Remove 'active' from all siblings and their descendants
+                $element.siblings('li').removeClass('active').find('li').removeClass('active');
+
+                // Recursively go up to remove 'active' from parallel branches in higher levels
+                if ($parent.length) {
+                    deactivateSiblings($parent);
+                }
+            }
+
+            // Start by removing 'active' from sibling branches all the way up to the root
+            deactivateSiblings($clickedItem);
+
+            // Toggle 'active' class on the clicked <li>
+            if ($clickedItem.hasClass('active')) {
+                // If it's already active, just remove the 'active' class from this element and its descendants
+                $clickedItem.removeClass('active').find('li').removeClass('active');
+            } else {
+                // Otherwise, add the 'active' class only to this element
+                $clickedItem.addClass('active');
+            }
+        });
+    });
+</script>

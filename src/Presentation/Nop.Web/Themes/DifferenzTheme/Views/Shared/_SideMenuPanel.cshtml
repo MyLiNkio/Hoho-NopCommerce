@@ -1,0 +1,108 @@
+﻿@using Nop.Core.Domain.Topics;
+@using Nop.Web.Factories;
+@using Nop.Core.Domain.Customers
+@inject Nop.Core.IWebHelper _webHelper
+@inject ICatalogModelFactory _catalogModelFactory
+@inject ICommonModelFactory _commonModelFactory
+
+@{
+    var topMenuModel = await _catalogModelFactory.PrepareTopMenuModelAsync();
+    var authModel = await _commonModelFactory.PrepareHeaderLinksModelAsync();
+}
+
+<div id="menu-btn" class="nav-menu-btn dd-element hide-min-1025">
+    <div class="dd-element__btn flx--row flx--align--center">
+        <div class="dd-menu-btn-dots">
+            <span class="dd-menu-btn-dots__span"></span>
+            <span class="dd-menu-btn-dots__span"></span>
+            <span class="dd-menu-btn-dots__span"></span>
+            <span class="dd-menu-btn-dots__span"></span>
+            <span class="dd-menu-btn-dots__span"></span>
+            <span class="dd-menu-btn-dots__span"></span>
+            <span class="dd-menu-btn-dots__span"></span>
+            <span class="dd-menu-btn-dots__span"></span>
+            <span class="dd-menu-btn-dots__span"></span>
+        </div>
+        <span class="hide-max-1024">@T("HeaderPanel.Menu.Btn")</span>
+    </div>
+</div>
+
+<div class="overlay"></div>
+
+<div class="side-menu-wraper">
+    <div class="side-menu">
+        <div class="top-btns-panel">
+
+            <div class="account-module dd-element">
+                <div class="dd-element__btn head-nav-icon">
+                    <img id="svg_icon" src="~/Themes/DifferenzTheme/Content/images/thumbs/new/icons/user.svg">
+                </div>
+
+                <div class="dd-element__content">
+                    <ul>
+                        @if (authModel.IsAuthenticated)
+                        {
+                            <li><a href="@Url.RouteUrl("CustomerInfo")" class="ico-account">@T("Account.MyAccount")</a></li>
+                            <li><a href="@Url.RouteUrl("Logout")" class="ico-logout">@T("Account.Logout")</a></li>
+                        }
+                        else
+                        {
+                            var returnUrl = Context.Request.Query.TryGetValue("returnUrl", out var url) && !StringValues.IsNullOrEmpty(url)
+                            ? url.ToString()
+                            : _webHelper.GetRawUrl(Context.Request);
+
+                            @if (authModel.RegistrationType != UserRegistrationType.Disabled)
+                            {
+                                <li><a href="@Url.RouteUrl("Register", new { returnUrl })" class="ico-register">@T("Account.Register")</a></li>
+                            }
+                            <li><a href="@Url.RouteUrl("Login", new { returnUrl })" class="ico-login">@T("Account.Login")</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            @await Component.InvokeAsync(typeof(LanguageSelectorViewComponent))
+
+            <div class="close-btn">
+                <span id="svg_icon">@T("Catalog.Filter.Close")</span>
+            </div>
+        </div>
+
+        <div class="head-activate-btn flx--fix-size">
+            <button onclick="window.location.href='@Url.RouteUrl("CheckCertificate")'">@T("Header.Top.ActivateBtn")</button>
+        </div>
+
+        <div class="for-who">
+            <h3 class="sector-name">@T("HeaderPanel.Menu.Btn")</h3>
+
+            <div class="dd-slider-menu">
+                @await Html.PartialAsync("~/Customization/Views/Shared/_CatalogDDButton.cshtml", topMenuModel)
+            </div>
+        </div>
+
+        <div class="topics-block">
+            <h3 class="sector-name">@T("HeaderPanel.InfoModule.Btn")</h3>
+            <ul>
+                @foreach (var topic in topMenuModel.Topics)
+                {
+                    <li><a href="@(Url.RouteUrl<Topic>(new { SeName = topic.SeName }))">@topic.Name</a></li>
+                }
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+<script asp-location="Footer">
+    $(document).ready(function () {
+        $('#menu-btn').click(function () {
+            $('.side-menu-wraper').addClass('side-menu-open');
+            $('.overlay').fadeIn(300);
+        });
+
+        $('.side-menu .close-btn span, .overlay').click(function () {
+            $('.side-menu-wraper').removeClass('side-menu-open');
+            $('.overlay').fadeOut(300);
+        });
+    });
+</script>

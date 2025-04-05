@@ -346,8 +346,9 @@ public partial class ShoppingCartService : IShoppingCartService
             warnings.Add(await _localizationService.GetResourceAsync("ShoppingCart.ProductUnpublished"));
         }
 
-        //we can add only simple products
-        if (product.ProductType != ProductType.SimpleProduct)
+        //HOHOImprovement
+        //we can't add grouped products to shopping cart
+        if (product.ProductType == ProductType.GroupedProduct)
         {
             warnings.Add("This is not simple product");
         }

@@ -846,7 +846,8 @@ public partial class OrderReportService : IOrderReportService
         DateTime? createdFromUtc = null, DateTime? createdToUtc = null,
         int pageIndex = 0, int pageSize = int.MaxValue, bool showHidden = false)
     {
-        var simpleProductTypeId = (int)ProductType.SimpleProduct;
+        //HOHOImprove
+        var groupedProductTypeId = (int)ProductType.GroupedProduct;
 
         var availableProductsQuery =
             from oi in _orderItemRepository.Table
@@ -862,7 +863,8 @@ public partial class OrderReportService : IOrderReportService
                 into p_oi
             from oi in p_oi.DefaultIfEmpty()
             where oi == null &&
-                  p.ProductTypeId == simpleProductTypeId &&
+                 //HOHOImprove
+                  p.ProductTypeId == groupedProductTypeId &&
                   !p.Deleted &&
                   (vendorId == 0 || p.VendorId == vendorId) &&
                   (showHidden || p.Published)

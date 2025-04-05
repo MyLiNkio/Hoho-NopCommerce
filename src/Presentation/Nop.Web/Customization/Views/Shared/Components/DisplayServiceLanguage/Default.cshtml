@@ -1,0 +1,14 @@
+﻿@using Nop.Services.Localization
+@inject ILocalizationService _localizationService
+@inject IWorkContext _workContext
+
+@model ProductSpecificationAttributeModel
+
+@{
+    if (Model == null || !Model.Values.Any())
+        return;
+
+    var serviceLanguages = string.Join(", ", Model.Values.Select(x => x.ValueRaw));
+}
+
+<div><p class="serv_lang"><b>@Model.Name:</b> @serviceLanguages</p></div>

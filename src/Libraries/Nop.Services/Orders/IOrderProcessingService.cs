@@ -338,4 +338,12 @@ public partial interface IOrderProcessingService
     /// <param name="recurringPayment">Recurring payment</param>
     /// <returns>A task that represents the asynchronous operation</returns>
     Task<int> GetCyclesRemainingAsync(RecurringPayment recurringPayment);
+
+    //HOHOImprove
+    /// <summary>
+    /// Sets Order status to Incomplete
+    /// </summary>
+    /// <param name="order">Order</param>
+    /// <returns>A task that represents the asynchronous operation</returns>
+    Task SetOrderStatusToIncomplete(Order order);
 }

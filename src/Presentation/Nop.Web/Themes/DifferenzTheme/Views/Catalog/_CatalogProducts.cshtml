@@ -1,0 +1,76 @@
+﻿@model CatalogProductsModel
+
+<script src="~/js/public.catalogproducts.js" asp-location="Footer"></script>
+
+<div class="products-container">
+    <div class="ajax-products-busy"></div>
+    <div class="products-wrapper">
+        @await Html.PartialAsync("_ProductsInGridOrLines", Model)
+    </div>
+</div>
+<script asp-location="Footer">
+    $(document).ready(function () {
+        // Function to equalize the heights of images
+        function equalizeImageHeights() {
+            let minHeight = null;
+            let width = null;
+
+            // Find the smallest height among the images with class "owl-lazy"
+            $('.item-box .owl-lazy').each(function () {
+                const imgHeight = $(this).height(); // Get the height of the image
+                const imgWidth = $(this).width(); //Get the width of the image
+                if (minHeight === null || imgHeight < minHeight) {
+                    minHeight = imgHeight;
+                    width = imgWidth; //set width of the image with a smallest height;
+                }
+            });
+
+            // Apply the minimum height to all the "owl-lazy" images
+            if (minHeight) {
+                $('.item-box .owl-lazy').each(function () {
+                    //initial version
+                    //$(this).css('height', minHeight + 'px'); // Set the new height
+                    
+                    //modify images to 4:3 aspect ratio
+                    var heightToSet = Math.round(width / 4) * 3;
+                    $(this).css('height', heightToSet + 'px'); // Set the new height
+
+                    //to set image with 1:1 aspect ration
+                    //$(this).css('height', width + 'px'); // Set the new height
+                    
+                });
+            }
+        }
+
+        // Run the function when the document is ready
+        equalizeImageHeights();
+
+        // Run the function when the window is resized
+        $(window).resize(function () {
+            equalizeImageHeights();
+        });
+
+        CatalogProducts.init({
+            ajax: @Model.UseAjaxLoading.ToString().ToLowerInvariant(),
+            browserPath: '@Context.Request.Path',
+            fetchUrl: '@ViewData["fetchUrl"]'
+        });
+
+        addPagerHandlers();
+        $(CatalogProducts).on('loaded', function () {
+            addPagerHandlers();
+
+            setTimeout(function () {
+                equalizeImageHeights();
+            }, 500); // 1000ms = 1 second
+        });
+    });
+
+    function addPagerHandlers() {
+        $('[data-page]').on('click', function (e) {
+            e.preventDefault();
+            CatalogProducts.getProducts($(this).data('page'));
+            return false;
+        });
+    }
+</script>

@@ -1,0 +1,15 @@
+﻿@using Nop.Services.Localization
+@using Nop.Core
+@using Nop.Web.Framework.UI
+
+@inject INopHtmlHelper NopHtml
+
+@{
+    Layout = "_ColumnsOne";
+    NopHtml.AddTitleParts("Backstage");
+    NopHtml.AddMetaDescriptionParts("manually applies internal changes");
+    NopHtml.AppendPageCssClassParts("html-home-page");
+}
+<div class="page home-page">
+    <hi style="text-align: center">OK!</hi>
+</div>

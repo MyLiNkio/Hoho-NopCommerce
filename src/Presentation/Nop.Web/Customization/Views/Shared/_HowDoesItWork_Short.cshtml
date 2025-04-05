@@ -1,0 +1,14 @@
+﻿@using Nop.Web.Factories
+@inject ITopicModelFactory _topicModelFactory
+
+@{
+    var themeName = await themeContext.GetWorkingThemeNameAsync();
+    NopHtml.AppendCssFileParts($"~/Themes/{themeName}/Content/css/how_section.css");
+
+    var systemName = "HowItWorks_Short_block";
+    var model = await _topicModelFactory.PrepareTopicModelBySystemNameAsync(systemName);
+    if (model == null)
+        return;
+}
+
+@Html.Raw(model.Body)

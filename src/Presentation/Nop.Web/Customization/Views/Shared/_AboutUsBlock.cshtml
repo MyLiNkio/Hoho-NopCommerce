@@ -1,0 +1,24 @@
+﻿@using Nop.Web.Factories
+@inject ITopicModelFactory _topicModelFactory
+
+@{
+    var readMoreTopicPageSystemName = "AboutUs";
+    var systemName = "AboutUsBlock";
+    var model = await _topicModelFactory.PrepareTopicModelBySystemNameAsync(systemName);
+    if (model == null)
+        return;
+
+    var readMoreTopicModel = await _topicModelFactory.PrepareTopicModelBySystemNameAsync(readMoreTopicPageSystemName);
+    var topicUrl = Url.RouteUrl(NopRoutingDefaults.RouteName.Generic.Topic, new { SeName = readMoreTopicModel.SeName });
+}
+
+
+
+
+<div class="about_us_block">
+    <div class="title">
+        <h1>@Html.Raw(model.Title)</h1>
+        @Html.Raw(model.Body)
+        <a class="link" href="@topicUrl">@T("Hoho.General.ReadMore")</a>
+    </div>
+</div>

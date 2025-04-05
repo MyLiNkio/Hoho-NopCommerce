@@ -45,7 +45,8 @@
 
             <div class="form-horizontal">
                 <div class="cards-group">
-                    @if (Model.ProductType == ProductType.SimpleProduct)
+                    //HOHOImprove
+                    @if (Model.ProductType != ProductType.GroupedProduct)
                     {
                         <div class="card card-default">
                             <div class="card-body">

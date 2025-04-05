@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Hoho",
+  "FriendlyName": "Externaly available APIs",
+  "SystemName": "Hoho.ExternalAPIs",
+  "Version": "0.11",
+  "SupportedVersions": [ "4.80" ],
+  "Author": "Hoho.ge",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Hoho.ExternalAPIs.dll",
+  "Description": "Custom APIs for Hoho's needs"
+}

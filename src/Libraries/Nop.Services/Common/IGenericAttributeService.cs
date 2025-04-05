@@ -87,4 +87,15 @@ public partial interface IGenericAttributeService
     /// </returns>
     Task<TPropType> GetAttributeAsync<TEntity, TPropType>(int entityId, string key, int storeId = 0, TPropType defaultValue = default)
         where TEntity : BaseEntity;
+
+    //HOHOImprove
+    /// <summary>
+    /// Get attributes for KeyGroup
+    /// </summary>
+    /// <param name="keyGroup">Key group</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the get attributes
+    /// </returns>
+    Task<IList<GenericAttribute>> GetAttributesForKeyGroupAsync(string keyGroup);
 }

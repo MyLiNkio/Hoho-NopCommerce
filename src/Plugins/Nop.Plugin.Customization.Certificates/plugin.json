@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Customization",
+  "FriendlyName": "Certificates managing integraion",
+  "SystemName": "Customization.CertificatesManagerManager",
+  "Version": "1.00",
+  "SupportedVersions": [ "4.60" ],
+  "Author": "hoho.ge",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Customization.CertificatesManagerManager.dll",
+  "Description": "This plugin intergrates functionality to work with cpecific gift certificates: management, activation, etc."
+}

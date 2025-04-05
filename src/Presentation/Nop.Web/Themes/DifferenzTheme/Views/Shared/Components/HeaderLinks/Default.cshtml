@@ -1,0 +1,118 @@
+﻿@model HeaderLinksModel
+@using Nop.Core.Domain.Customers
+@inject Nop.Core.IWebHelper webHelper
+
+
+<div class="header-icons">
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderLinksBefore, additionalData = Model })
+
+    @*<div class="search-box store-search-box">
+    @await Component.InvokeAsync(typeof(SearchBoxViewComponent))
+    </div>*@
+    <div class="search-module dd-element">
+        <div class="dd-element__btn head-nav-icon">
+            <img id="svg_icon" src="~/Themes/DifferenzTheme/Content/images/thumbs/new/icons/search.svg">
+        </div>
+
+        <div class="dd-element__content">
+            <ul>
+                @await Component.InvokeAsync(typeof(SearchBoxViewComponent))
+                <div class="search-box"></div>
+                <script asp-location="Footer">
+                    $(document).ready(function () {
+                        $('#search-mob-btn').on('click', function () {
+                            $('#search-mob-field #small-searchterms').val('');
+                            $('#search-mob-field').toggle();
+                        });
+                        $('#search-mob-field').focusout(function () {
+                            $('#search-mob-field #small-searchterms').val('');
+                            //$('#search-mob-field').hide();
+                        });
+                    });
+                </script>
+            </ul>
+        </div>
+    </div>
+
+    @if (Model.WishlistEnabled)
+    {
+        <div class="wish-module">
+            <div class="wish-module__dd-btn head-nav-icon">
+                <a href="@Url.RouteUrl("Wishlist")" target="_blank" data-toggle="tooltip" data-placement="top" title="@T("Wishlist")">
+                    @*<div class="cart-content">*@
+                    <img id="svg_icon" src="~/Themes/DifferenzTheme/Content/images/thumbs/new/icons/wishlist.svg">
+                    @*</div>*@
+                </a>
+            </div>
+        </div>
+    }
+
+    @if (Model.ShoppingCartEnabled)
+    {
+        <div class="cart-module dd-element">
+            <div id="topcartmodule" class="cart-module__dd-btn head-nav-icon">
+                <a href="@Url.RouteUrl("ShoppingCart")" target="_blank" data-toggle="tooltip" data-placement="top" title="@T("ShoppingCart")">
+                    @*<div class="cart-content">*@
+                    <img id="svg_icon" src="~/Themes/DifferenzTheme/Content/images/thumbs/new/icons/cart.svg">
+                    @*</div>*@
+                </a>
+            </div>
+            @await Component.InvokeAsync(typeof(FlyoutShoppingCartViewComponent))
+        </div>
+
+        <script asp-location="Footer">
+            $(document).ready(function () {
+                $('.header').on('mouseenter', '#topcartmodule', function () {
+                    $('#flyout-cart').addClass('active');
+                });
+                $('.header').on('mouseleave', '#topcartmodule', function () {
+                    $('#flyout-cart').removeClass('active');
+                });
+                $('.header').on('mouseenter', '#flyout-cart', function () {
+                    $('#flyout-cart').addClass('active');
+                });
+                $('.header').on('mouseleave', '#flyout-cart', function () {
+                    $('#flyout-cart').removeClass('active');
+                });
+            });
+        </script>
+    }
+
+    <div class="head-activate-btn flx--fix-size hide-max-1024">
+        <button onclick="window.location.href='@Url.RouteUrl("CheckCertificate")'">@T("Header.Top.ActivateBtn")</button>
+    </div>
+
+    <div class="account-module dd-element hide-max-1024">
+        <div class="dd-element__btn head-nav-icon">
+            <img id="svg_icon" src="~/Themes/DifferenzTheme/Content/images/thumbs/new/icons/user.svg">
+        </div>
+
+        <div class="dd-element__content">
+            <ul>
+                @if (Model.IsAuthenticated)
+                {
+                    <li><a href="@Url.RouteUrl("CustomerInfo")" class="ico-account">@T("Account.MyAccount")</a></li>
+                    <li><a href="@Url.RouteUrl("Logout")" class="ico-logout">@T("Account.Logout")</a></li>
+                }
+                else
+                {
+                    var returnUrl = Context.Request.Query.TryGetValue("returnUrl", out var url) && !StringValues.IsNullOrEmpty(url)
+                    ? url.ToString()
+                    : webHelper.GetRawUrl(Context.Request);
+
+                    @if (Model.RegistrationType != UserRegistrationType.Disabled)
+                    {
+                        <li><a href="@Url.RouteUrl("Register", new { returnUrl })" class="ico-register">@T("Account.Register")</a></li>
+                    }
+                    <li><a href="@Url.RouteUrl("Login", new { returnUrl })" class="ico-login">@T("Account.Login")</a></li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    <div class="hide-max-1024">
+        @await Component.InvokeAsync(typeof(LanguageSelectorViewComponent))
+    </div>
+
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderLinksAfter, additionalData = Model })
+</div>

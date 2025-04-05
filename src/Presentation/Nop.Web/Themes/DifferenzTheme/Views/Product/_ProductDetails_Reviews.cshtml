@@ -1,0 +1,173 @@
+﻿@using Nop.Services.Catalog;
+@using Nop.Web.Factories;
+@model ProductDetailsModel
+
+@inject IProductService _productService
+@inject IProductModelFactory _productModelFactory
+@inject CatalogSettings _catalogSettings
+@inject Nop.Services.Html.IHtmlFormatter htmlFormatter
+
+@{
+    var product = await _productService.GetProductByIdAsync(Model.Id);
+    var displayReviewBlock = false;
+    var reviewModel = new ProductReviewsModel();
+
+    if (product != null && !product.Deleted && product.Published && product.AllowCustomerReviews)
+    {
+        reviewModel = await _productModelFactory.PrepareProductReviewsModelAsync(product);
+
+        //await ValidateProductReviewAvailabilityAsync(product);
+
+        //default value
+        reviewModel.AddProductReview.Rating = _catalogSettings.DefaultProductRatingValue;
+
+        //default value for all additional review types
+        if (reviewModel.ReviewTypeList.Count > 0)
+            foreach (var additionalProductReview in reviewModel.AddAdditionalProductReviewList)
+            {
+                additionalProductReview.Rating = additionalProductReview.IsRequired ? _catalogSettings.DefaultProductRatingValue : 0;
+            }
+
+        displayReviewBlock = true;
+    }
+}
+
+@*TODO: Сделать кнопку для добавления отзыва. Кнопка активна только тогда, когда пользователю разрешено добавлять отзывы.
+В других случаях кнопка не активна и отображается надпись что-то вроде: "Только тот, кто воспользовался услугой может оставить отзыв."
+*@
+
+@*TODO: Сделать пейджинацию для отзывов.*@
+
+@if (displayReviewBlock)
+{
+    <div class="review-container">
+        <div class="review_intro">
+            <div>
+                @if (reviewModel.Items.Count > 0)
+                {
+                    <p>@T("Product.Reviews.CTA_AddReview")</p>
+                }
+                else
+                {
+                    <p>@T("Product.Reviews.NoReviewsYet")</p>
+                    <p>@T("Reviews.Overview.First")</p>
+                }
+            </div>
+            <button onclick="window.location.href='@Url.RouteUrl("ProductReviews", new { productId = product.Id })'">@T("Product.Reviews.AddReview")</button>
+        </div>
+        @*<p>@T("Product.Reviews.WhoCanLeave")</p> *@
+
+        @if (reviewModel.Items.Count > 0)
+        {
+            var counter = 0;
+            @foreach (var item in reviewModel.Items)
+            {
+                @if (++counter > 5)
+                {
+                    break;
+                }
+                <div class="review-item">
+                    <div class="review-item-head">
+                        <div class="review-head-avatar">
+                            @*TODO: Add possibility to add customer images to review*@
+                            @if (!string.IsNullOrEmpty(item.CustomerAvatarUrl))
+                            {
+                                <img class="review-avatar" src="@item.CustomerAvatarUrl" alt="Customer immage witout vatar.">
+                            }
+                            else
+                            {
+                                <img class="review-avatar" src="~/Themes/DifferenzTheme/Content/images/no-avatar.png" alt="Customer immage witout vatar.">
+                            }
+                        </div>
+                        <div class="review-item-reviewer">
+                            <div class="product-review-raiting">
+                                <div class="product-rating-box">
+                                    <div class="rating">
+                                        @{
+                                            var ratingPercent = item.Rating * 20;
+                                        }
+                                        <div style="width: @(ratingPercent)%">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="name">@item.CustomerName</span>
+                            <span class="date">@item.WrittenOnStr</span>
+                        </div>
+                    </div>
+                    <div class="review-item-content">
+                        <div class="review-text-container">
+                            <div class="review-text">
+                                @Html.Raw(htmlFormatter.FormatText(item.ReviewText, false, true, false, false, false, false))
+                            </div>
+                            <button class="review-item-showemore">
+                                <span class="show-text">@T("Product.ReviewsBlock.ShowMore")</span>
+                                <span class="hide-text">@T("Product.ReviewsBlock.Hide")</span>
+                            </button>
+                        </div>
+
+                        @*TODO: Add posibility to add and display images to reviews. Currently it is not supported.*@
+                        @*<div class="review-item-imgs">
+                        </div>*@
+
+                        @if (!string.IsNullOrEmpty(item.ReplyText))
+                        {
+                            <div class="review-item reply">
+
+                                @*TODO: Add possibility to set avatar of responder to make replies more humanable and close to people*@
+                                @*<div class="review-item-head">
+                                <div class="review-head-avatar">
+                                <img class="review-avatar" src="https://www.bodo.ua/new_design/img/no-avatar.png" alt="пользователь без аватара">
+                                </div>
+                                <div class="review-item-reviewer">
+                                <span class="name">hoho.ge</span>
+                                <span class="date">20.12.2023</span>
+                                </div>
+                                </div>*@
+                                <div class="review-item-content">
+                                    <div class="review-text-container">
+                                        <div class="review-text">
+                                            @Html.Raw(htmlFormatter.FormatText(item.ReplyText, false, true, false, false, false, false))
+                                        </div>
+                                        <button class="review-item-showemore">
+                                            <span class="show-text">@T("Product.ReviewsBlock.ShowMore")</span>
+                                            <span class="hide-text">@T("Product.ReviewsBlock.Hide")</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            @if (reviewModel.Items.Count > 5)
+            {
+                <button onclick="window.location.href='@Url.RouteUrl("ProductReviews", new { productId = product.Id })'">@T("Product.Reviews.ReedAll")</button>
+            }
+
+            <script asp-location="Footer">
+                $(document).ready(function () {
+                    $('.review-text-container').each(function () {
+                        var container = $(this);
+                        var content = container.find('.review-text');
+                        var button = container.find('.review-item-showemore');
+                        var showText = container.find('.review-item-showemore .show-text');
+                        var hideText = container.find('.review-item-showemore .hide-text');
+
+                        //Check if block height less that actuall height of content - show button
+                        if (content.height() < content[0].scrollHeight) {
+                            button.show();
+                        }
+
+                        button.click(function () {
+                            content.toggleClass('review-text-expanded');
+                            showText.toggle();
+                            hideText.toggle();
+                        });
+                    });
+                });
+            </script>
+        }
+    </div>
+}

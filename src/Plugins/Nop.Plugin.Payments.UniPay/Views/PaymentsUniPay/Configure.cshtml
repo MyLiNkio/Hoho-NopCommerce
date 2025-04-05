@@ -1,0 +1,91 @@
+﻿@model Nop.Plugin.Payments.UniPay.Models.ConfigurationModel
+
+@{
+    Layout = "_ConfigurePlugin";
+}
+@using Nop.Services
+@using Nop.Plugin.Payments.UniPay.Common
+
+@await Component.InvokeAsync("StoreScopeConfiguration")
+<form asp-controller="PaymentsUniPay" asp-action="Configure" method="post">
+    <div class="panel-group">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="form-group">
+                    <div class="col-md-3">
+                        
+                    </div>
+                    <div class="col-md-9">
+                        @Html.Raw(T("Plugins.Payments.UniPay.PluginInstructions"))
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <nop-label asp-for="CallbackUrl" />
+                    </div>
+                    <div class="col-md-9" style="padding-top: 5px">
+                        @Model.CallbackUrl
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="MerchantId_OverrideForStore" asp-input="MerchantId" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="MerchantId" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="MerchantId" />
+                        <span asp-validation-for="MerchantId"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="SecretKey_OverrideForStore" asp-input="SecretKey" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="SecretKey" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="SecretKey" />
+                        <span asp-validation-for="SecretKey"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="Language_OverrideForStore" asp-input="Language" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="Language" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="Language" />
+                        <span asp-validation-for="Language"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <nop-override-store-checkbox asp-for="Currency_OverrideForStore" asp-input="Currency" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+                        <nop-label asp-for="Currency" />
+                    </div>
+                    <div class="col-md-9">
+                        <nop-editor asp-for="Currency" />
+                        <span asp-validation-for="Currency"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-3">
+
+                    </div>
+                    <div class="col-md-9">
+                        <a id="log" href="/Admin/PaymentsUniPay/GetLog" target="_blank">@T("Plugins.Payments.UniPay.DownloadLog")</a>
+                    </div>
+                </div>
+
+                <div class="form-group">    
+                    <div class="col-md-9 col-md-offset-3">
+                        <input type="submit" name="save" class="btn bg-primary" value="@T("Admin.Common.Save")" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

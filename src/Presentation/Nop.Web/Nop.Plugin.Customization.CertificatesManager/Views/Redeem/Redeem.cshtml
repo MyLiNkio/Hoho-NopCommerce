@@ -1,0 +1,175 @@
+﻿@using Nop.Core.Domain.Catalog;
+@using Nop.Services.Helpers
+@using Nop.Web.Components
+@*//MoveRedeem*@
+@model RedeemCertificateModel
+
+@{
+    Layout = "_ColumnsOne";
+
+    //title
+    NopHtml.AddTitleParts(T("PageTitle.Redeem").Text);
+
+    //page class
+    NopHtml.AppendPageCssClassParts("html-redeem-page");
+}
+
+<div class="page activation-page redeem-page">
+    <div class="page-up-margin">
+        <div class="page-title title">
+            <h1>@T("Redeem.Check.PageTitle")</h1>
+        </div>
+
+        <div class="page-body">
+            @await Html.PartialAsync("~/Nop.Plugin.Customization.CertificatesManager/Views/Shared/_ActivationSteps.cshtml", 2)
+
+
+            <div class="cert-details">
+
+                <div data-step-2="">
+                    <h2 class="congrat">@T("Redeem.Activate.Title")</h2>
+                    <h2 class="congratSub">@T("Redeem.Activate.Subtitle")</h2>
+                    <h2>@T("Redeem.Activate.FolowInstruction")</h2>
+                </div>
+
+                <form id="activate_service" asp-route="Redeem" method="post" autocomplete="off">
+                    <div asp-validation-summary="ModelOnly" class="message-error"></div>
+
+                    <div>
+                        <ul class="redeem-activities-list">
+                            <li class="redeem-activity-item">
+                                <div class="info-choose">
+                                    <div class="info-choose-title">
+                                        <h3><span class="highlight">@T("Redeem.Coose.Title")</span></h3>
+                                        <p>
+                                            @T("Redeem.Choose.ActivateTill", ((DateTime)Model.ValidationDate).ToString("dd/MM/yyyy"))
+                                        </p>
+                                    </div>
+                                    <ul>
+                                        <li>
+                                            <span class="info-choose__check"></span>
+                                            <p>@T("Redeem.Choose.Explore")</p>
+                                        </li>
+                                        <li>
+                                            <span class="info-choose__check"></span>
+                                            <p>@T("Redeem.Choose.Choose")</p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+
+                            @foreach (var item in Model.OrderItems)
+                            {
+                                var picture = item.PictureModels.FirstOrDefault();
+
+                                <li class="redeem-activity-item" data-item-id="@item.OrderItemId" data-item-SKU="@item.Sku">
+                                    <div class="redeem-item-container">
+                                        <div class="redeem-item-top">
+                                            <a href="@(Url.RouteUrl<Product>(new { SeName = item.SeName }))" title="@picture?.Title">
+                                                <img class="owl-lazy" alt="@picture?.AlternateText" src="@picture?.ImageUrl" title="@picture?.Title" />
+                                            </a>
+
+                                            <a href="@(Url.RouteUrl<Product>(new { SeName = item.SeName }))">
+                                                <h3> @item.Name</h3>
+                                            </a>
+                                            @await Component.InvokeAsync(typeof(DisplayServiceLanguageViewComponent), new { specifications = item.ProductSpecificationModel })
+                                            <p class="activity-item-descr">@Html.Raw(item.ShortDescription)</p>
+                                        </div>
+                                        <div class="redeem-item-bottom">
+                                            @if (item.ProductAttributes != null)
+                                            {
+                                                foreach (var pAttribute in item.ProductAttributes)
+                                                {
+                                                    if (pAttribute.Values?.Count > 0)
+                                                    {
+                                                        var preselectedItems = pAttribute.Values.Where(x => x.IsPreSelected).ToList();
+                                                        var counter = 0;
+                                                        if (preselectedItems.Count == 0)
+                                                        { continue; }
+
+                                                        <p class="pAtribute">
+                                                            <span class="aName">
+                                                                @Html.Raw(string.IsNullOrEmpty(pAttribute.TextPrompt) ? pAttribute.Name : pAttribute.TextPrompt):
+                                                            </span>
+                                                            @foreach (var preselcted in preselectedItems)
+                                                            {
+                                                                string value = preselcted.Name;
+                                                                if (++counter < preselectedItems.Count)
+                                                                {
+                                                                    value += ", ";
+                                                                }
+                                                                <span>@value</span>
+                                                            }
+                                                        </p>
+                                                    }
+                                                }
+                                            }
+                                            <button class="choose-and-activate" type="submit" data-order-item-id="@item.OrderItemId">@T("Redeem.Coose.ChooseBtn")</button>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+
+                            @*<li class="redeem-activity-item" data-step-2="">
+                            <div class="info-choose">
+                            <ul>
+                            <li>
+                            <span class="info-choose__check"></span>
+                            <p>Ничего не впечатлило? Наша миссия - реализоввывать мечты! Поэтому мы предоставляем тебе право вбрыть любую другую услугу на нашем сайте в рамках стоимости номинала сертификата, разделить сертификат на несколько услуг или выбрать услугу дороже с доплатой разницы. Выбери мечту и позвони нам.</p>
+                            </li>
+                            </ul>
+                            </div>
+                            <div class="choose-other-info">
+                            </div>
+                            </li>*@
+
+                            @*Перенести или отменить ваше впечатление можно не позже, чем за 3-суток до забронированной даты. Если вы сообщите об отмене или переносе даты позже указанного времени, к сожалению, ваш сертификат аннулируется. Вы больше не сможете посетить по нему впечатление.
+                            Если впечатление зависит от погоды и в день проведения будет плохая погода, впечатление может быть перенесено на другую дату и время.*@
+                        </ul>
+
+                        <script asp-location="Footer">
+                            $(document).ready(function () {
+
+                                // Function to equalize the heights of images
+                                function equalizeImageHeights() {
+                                    let width = $('.redeem-activity-item .owl-lazy').last().width();
+
+                                    //modify images to 4:3 aspect ratio
+                                    if (width) {
+                                        $('.redeem-activity-item .owl-lazy').each(function () {
+                                            var heightToSet = Math.round(width / 4) * 3;
+                                            $(this).css('height', heightToSet + 'px'); // Set the new height
+                                        });
+                                    }
+                                }
+
+                                // Run the function when the document is ready
+                                equalizeImageHeights();
+
+                                // Run the function when the window is resized
+                                $(window).resize(function () {
+                                    equalizeImageHeights();
+                                });
+                            });
+                        </script>
+                    </div>
+
+                    @Html.HiddenFor(m => m.ValidationToken)
+                    @Html.HiddenFor(m => m.CertificateNumber)
+                    @Html.HiddenFor(m => m.OrderItemId, new { data_order_item_input = "data_order_item_input" })
+                </form>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script asp-location="Footer">
+    $(document).ready(function () {
+        $('[data-order-item-id]').click(function () {
+            var orderItemId = $(this).data('order-item-id');
+            $('[data-order-item-input]').val(orderItemId); //записывает в скрытое поле айдишник выбраной услуги.
+            return true;
+        });
+    });
+</script>

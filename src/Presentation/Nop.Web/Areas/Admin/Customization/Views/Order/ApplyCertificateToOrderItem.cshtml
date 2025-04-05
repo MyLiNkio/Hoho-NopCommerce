@@ -1,0 +1,105 @@
+﻿@model ApplyCertificateToOrderItemModel
+
+
+@{
+    Layout = "_AdminLayout";
+    //page title
+    ViewBag.PageTitle = "Apply certificate";
+    //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Orders");
+}
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+        Apply certificate (card) to the order item.
+        <small>
+            <i class="fas fa-arrow-circle-left"></i>
+            <a asp-action="Edit" asp-route-id="@Model.OrderId">@T("Admin.Orders.Products.AddNew.BackToOrder")</a>
+        </small>
+    </h1>
+    <div class="float-right">
+        &nbsp;
+    </div>
+</div>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="form-horizontal">
+            <div class="cards-group">
+                <form asp-controller="Order" asp-action="ApplyCertificateToOrderItem" method="post" id="order-form">
+                    
+                    <input asp-for="OrderId" type="hidden" />
+                    <input asp-for="OrderItemId" type="hidden" />
+
+                    <div class="fieldset">
+                        @if (Model.Warnings.Any())
+                        {
+                            <p class="certificate-alert">@string.Join(Environment.NewLine, Model.Warnings.ToArray())</p>
+                        }
+                        <div class="form-fields">
+                            <div class="card-data">
+                                <div class="card-number inputs">
+                                    <label asp-for="ValidityPeriod_Days" asp-postfix=":"></label>
+                                    <input asp-for="ValidityPeriod_Days"/>
+                                    <nop-required />
+                                    <span asp-validation-for="ValidityPeriod_Days"></span>
+                                </div>
+                                <div class="card-number inputs">
+                                    <label asp-for="CertificateNumber" asp-postfix=":"></label>
+                                    <input asp-for="CertificateNumber" placeholder="XX-XX-XX-XX" oninput="return formatToPattern(event)" maxlength="11" />
+                                    <nop-required />
+                                    <span asp-validation-for="CertificateNumber"></span>
+                                </div>
+                            </div>
+
+                            <script asp-location="Footer">
+                                var formatToPattern = function (e) {
+                                    var targetElement = e.target;
+                                    var value = e.target.value;
+                                    var pattern = targetElement.getAttribute('placeholder');
+                                    if (pattern === undefined) return false;
+
+                                    if (pattern[value.length] == '-') {
+                                        value += '-';
+                                    }
+
+                                    targetElement.value = value;
+                                    return true;
+                                }
+
+                                document.addEventListener("paste", function (e) {
+                                    var cardElement = e.target;
+                                    var pastedText = undefined;
+                                    if (window.clipboardData && window.clipboardData.getData) { // IE
+                                        pastedText = window.clipboardData.getData('Text');
+                                    } else if (e.clipboardData && e.clipboardData.getData) {
+                                        pastedText = e.clipboardData.getData('text/plain');
+                                    }
+                                    e.preventDefault();
+                                    var requiredLength = cardElement.getAttribute('maxlength');
+                                    var pattern = cardElement.getAttribute('placeholder');
+                                    if (pattern === undefined || requiredLength === undefined) return false;
+                                    var textToPaste = pastedText.trim().substring(0, requiredLength).replace(/\-*/g, '').replace(/\ */g, '').replace(/\-*/g, '').replace(/\\n/g, '');
+
+                                    for (var i = 0; i < pattern.length || i < textToPaste.length; i++) {
+                                        if (pattern[i] == '-' && textToPaste[i] != '-') {
+                                            textToPaste = [textToPaste.slice(0, i), '-', textToPaste.slice(i)].join('').substring(0, requiredLength);
+                                        }
+                                    }
+
+                                    e.target.value = textToPaste;
+                                    return false;
+                                });
+                            </script>
+                        </div>
+                        
+                    </div>
+                    @if (!Model.HasCertificateApplied)
+                    {
+                        <input type="submit" />
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

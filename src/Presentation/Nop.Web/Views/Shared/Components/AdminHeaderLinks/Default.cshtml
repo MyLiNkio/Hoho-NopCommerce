@@ -19,4 +19,26 @@
         }
         @await Component.InvokeAsync(typeof(WidgetViewComponent), new { widgetZone = PublicWidgetZones.AdminHeaderLinksAfter, additionalData = Model })
     </div>
+
+
+    @* HOHOImprove *@
+    <script asp-location="Footer">
+        $(document).ready(function () {
+            function updateWindowSize() {
+                var windowWidth = $(window).width();
+                var windowHeight = $(window).height();
+
+                $('#window-width').text(windowWidth);
+                $('#window-height').text(windowHeight);
+            }
+
+            // Инициализация при загрузке страницы
+            updateWindowSize();
+
+            // Обновление размеров при изменении размеров окна браузера
+            $(window).resize(function () {
+                updateWindowSize();
+            });
+        });
+    </script>
 }

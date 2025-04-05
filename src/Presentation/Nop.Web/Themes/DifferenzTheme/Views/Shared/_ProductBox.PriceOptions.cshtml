@@ -1,0 +1,25 @@
+﻿@model ProductOverviewModel
+@using Nop.Core
+@using Nop.Core.Domain.Catalog
+@using Nop.Core.Domain.Orders
+@using Nop.Core.Domain.Tax
+@using Nop.Services.Catalog;
+@using Nop.Web.Factories;
+@inject CatalogSettings catalogSettings
+@inject IWorkContext workContext
+@inject IProductModelFactory _productModelFactory
+@inject IProductService _productService;
+
+@{
+    //1. get price options from DB to a variable.
+    var product = await _productService.GetProductByIdAsync(Model.Id);
+    var productDetailsModel = await _productModelFactory.PrepareProductDetailsModelAsync(product, null, false);
+    var productAttributes = productDetailsModel?.ProductAttributes;
+
+    //2. Display it on UI in drop down list with preselected value.
+    //3. Disable common Product's price value.
+}
+
+@*------------------------------------------- Grid view ------------------------------------------------------------*@
+
+@await Html.PartialAsync("/Views/Product/_ProductAttributes.cshtml", productDetailsModel)

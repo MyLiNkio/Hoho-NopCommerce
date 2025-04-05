@@ -935,6 +935,16 @@ public partial class PdfService : IPdfService
     {
         var fileName = $"order_{order.OrderGuid}_{CommonHelper.GenerateRandomDigitCode(4)}.pdf";
         var filePath = _fileProvider.Combine(_fileProvider.MapPath("~/wwwroot/files/exportimport"), fileName);
+
+        //HOHOImprove
+        // Get the directory part of the file path
+        string directoryPath = Path.GetDirectoryName(filePath);
+
+        // Check if the directory exists
+        if (!System.IO.Directory.Exists(directoryPath))
+            // Create all directories and subdirectories in the specified path
+            System.IO.Directory.CreateDirectory(directoryPath);
+
         await using var fileStream = new FileStream(filePath, FileMode.Create);
 
         await PrintOrderToPdfAsync(fileStream, order, language, store: null, vendor: vendor);

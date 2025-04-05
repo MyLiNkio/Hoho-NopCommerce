@@ -42,7 +42,8 @@
 
 
         var selectedProductTypeId = $("#@Html.IdFor(model => model.ProductTypeId)").val();
-        if (!selectedProductTypeId || selectedProductTypeId == simpleProductId) {
+        /*HOHOImprove*/
+        if (!selectedProductTypeId || selectedProductTypeId != groupedProductId) {
             $('#group-required-other-products').showElement();
             $('#group-visible-individually').showElement();
             $('#group-associated-products').hideElement();
@@ -54,7 +55,8 @@
             $('[data-card-name=product-downloadable]').showElement();
             $('[data-card-name=product-rental]').showElement();
             $('[data-card-name=product-recurring]').showElement();
-        } else if (selectedProductTypeId == groupedProductId) {
+        } 
+        else if (selectedProductTypeId == groupedProductId) {
             $('#group-required-other-products').hideElement();
             $('#group-visible-individually').hideElement();
             $('#group-associated-products').showElement();
@@ -348,7 +350,9 @@
             <nop-label asp-for="ProductTypeId" />
         </div>
         <div class="col-md-9">
-            <nop-select asp-for="ProductTypeId" asp-items="@(await ((ProductType)Model.ProductTypeId).ToSelectListAsync())" />
+            @* HOHOImprove *@
+            <nop-select asp-for="ProductTypeId" asp-items="Model.AvailableProductTypes" asp-required="true" />
+            @*<nop-select asp-for="ProductTypeId" asp-items="@(await ((ProductType)Model.ProductTypeId).ToSelectListAsync())" />*@
             <span asp-validation-for="ProductTypeId"></span>
         </div>
     </div>

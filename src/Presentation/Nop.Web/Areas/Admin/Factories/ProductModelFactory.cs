@@ -766,7 +766,9 @@ public partial class ProductModelFactory : IProductModelFactory
                 var defaultProductPicture = (await _pictureService.GetPicturesByProductIdAsync(product.Id, 1)).FirstOrDefault();
                 (productModel.PictureThumbnailUrl, _) = await _pictureService.GetPictureUrlAsync(defaultProductPicture, 75);
                 productModel.ProductTypeName = await _localizationService.GetLocalizedEnumAsync(product.ProductType);
-                if (product.ProductType == ProductType.SimpleProduct && product.ManageInventoryMethod == ManageInventoryMethod.ManageStock)
+                
+                //HOHOImprove
+                if (product.ProductType != ProductType.GroupedProduct && product.ManageInventoryMethod == ManageInventoryMethod.ManageStock)
                     productModel.StockQuantityStr = (await _productService.GetTotalStockQuantityAsync(product)).ToString();
 
                 return productModel;
@@ -865,12 +867,15 @@ public partial class ProductModelFactory : IProductModelFactory
             model.StockQuantity = 10000;
             model.NotifyAdminForQuantityBelow = 1;
             model.OrderMinimumQuantity = 1;
-            model.OrderMaximumQuantity = 10000;
+            //HOHOImprove
+            model.OrderMaximumQuantity = 1;
             model.TaxCategoryId = _taxSettings.DefaultTaxCategoryId;
             model.UnlimitedDownloads = true;
-            model.IsShipEnabled = true;
+            //HOHOImprove
+            model.IsShipEnabled = false;
             model.AllowCustomerReviews = true;
-            model.Published = true;
+            //HOHOImprove
+            model.Published = false;
             model.VisibleIndividually = true;
         }
 
@@ -882,6 +887,10 @@ public partial class ProductModelFactory : IProductModelFactory
 
         var currentVendor = await _workContext.GetCurrentVendorAsync();
         model.IsLoggedInAsVendor = currentVendor != null;
+
+        //HOHOImprove
+        //prepare available productTypes
+        await _baseAdminModelFactory.PrepareProductTypesAsync(model.AvailableProductTypes, defaultItemText: await _localizationService.GetResourceAsync("admin.product.producttype.none"));
 
         //prepare localized models
         if (!excludeProperties)

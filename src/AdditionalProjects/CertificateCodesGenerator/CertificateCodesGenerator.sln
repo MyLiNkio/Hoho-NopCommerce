@@ -1,0 +1,63 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33424.131
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CertificateCodesGenerator", "CertificateCodesGenerator.csproj", "{45BA8F68-D45D-4DE2-8570-B2AECC62E946}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VoucherManager", "..\VoucherManager\VoucherManager.csproj", "{0C45A348-CAD1-4F0D-8AEA-675A92662DAB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SymetricEncryptor", "..\SymetricEncriptor\SymetricEncryptor.csproj", "{85487675-45B5-475A-BE62-871FB5FE137B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Base64UrlEncoder", "..\Base64UrlEncoder\Base64UrlEncoder.csproj", "{EA3E95D5-A6BE-49AD-A59C-FD3A9B5123CB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{5A4A0913-DB21-47A5-BE9B-EA9CCA57EA96}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "QRCodesManager", "..\QRCodesGenerator\QRCodesManager.csproj", "{34A01D39-2450-43D1-A789-8B4CF6C06968}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PDFCombiner", "..\PDFCombiner\PDFCombiner.csproj", "{0517BB23-54E7-442A-AC31-11B207074E46}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{45BA8F68-D45D-4DE2-8570-B2AECC62E946}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45BA8F68-D45D-4DE2-8570-B2AECC62E946}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45BA8F68-D45D-4DE2-8570-B2AECC62E946}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45BA8F68-D45D-4DE2-8570-B2AECC62E946}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C45A348-CAD1-4F0D-8AEA-675A92662DAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C45A348-CAD1-4F0D-8AEA-675A92662DAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C45A348-CAD1-4F0D-8AEA-675A92662DAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C45A348-CAD1-4F0D-8AEA-675A92662DAB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85487675-45B5-475A-BE62-871FB5FE137B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85487675-45B5-475A-BE62-871FB5FE137B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85487675-45B5-475A-BE62-871FB5FE137B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85487675-45B5-475A-BE62-871FB5FE137B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EA3E95D5-A6BE-49AD-A59C-FD3A9B5123CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA3E95D5-A6BE-49AD-A59C-FD3A9B5123CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA3E95D5-A6BE-49AD-A59C-FD3A9B5123CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA3E95D5-A6BE-49AD-A59C-FD3A9B5123CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34A01D39-2450-43D1-A789-8B4CF6C06968}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34A01D39-2450-43D1-A789-8B4CF6C06968}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34A01D39-2450-43D1-A789-8B4CF6C06968}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34A01D39-2450-43D1-A789-8B4CF6C06968}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0517BB23-54E7-442A-AC31-11B207074E46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0517BB23-54E7-442A-AC31-11B207074E46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0517BB23-54E7-442A-AC31-11B207074E46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0517BB23-54E7-442A-AC31-11B207074E46}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0C45A348-CAD1-4F0D-8AEA-675A92662DAB} = {5A4A0913-DB21-47A5-BE9B-EA9CCA57EA96}
+		{85487675-45B5-475A-BE62-871FB5FE137B} = {5A4A0913-DB21-47A5-BE9B-EA9CCA57EA96}
+		{EA3E95D5-A6BE-49AD-A59C-FD3A9B5123CB} = {5A4A0913-DB21-47A5-BE9B-EA9CCA57EA96}
+		{34A01D39-2450-43D1-A789-8B4CF6C06968} = {5A4A0913-DB21-47A5-BE9B-EA9CCA57EA96}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {91A5FEB9-67B2-49B8-A322-DD7CDB0D829A}
+	EndGlobalSection
+EndGlobal

@@ -51,7 +51,9 @@
                 {
                     <button type="button" class="button-1 cart-button" onclick="setLocation('@(Url.RouteUrl("ShoppingCart"))')">@T("ShoppingCart.Mini.ViewCart")</button>
                 }
-                @if (Model.DisplayCheckoutButton)
+
+                @* HOHOImprove *@
+                @* @if (Model.DisplayCheckoutButton)
                 {
                     var checkoutUrl = "";
                     if (Model.AnonymousCheckoutAllowed && Model.CurrentCustomerIsGuest)
@@ -63,7 +65,7 @@
                         checkoutUrl = Url.RouteUrl("Checkout");
                     }
                     <button type="button" class="button-1 checkout-button" onclick="setLocation('@checkoutUrl')">@T("Checkout.Button")</button>
-                }
+                } *@
             </div>
         }
     </div>
