@@ -31,18 +31,81 @@
     <!-- We copy the entire \App_Data directory. But we ignore JSON files and data protection keys  -->
     <Content Include="App_Data\**" CopyToPublishDirectory="PreserveNewest" Exclude="App_Data\*.json" />
     <Content Remove="App_Data\*.json" />
+    <Content Remove="Themes\DefaultClean\**" />
     <Content Update="App_Data\DataProtectionKeys\*.xml" CopyToPublishDirectory="Never" />
 
     <Compile Remove="Plugins\**;Themes\**" />
+
+    <Compile Remove="Themes\DefaultClean\**" />
     <Content Remove="Plugins\**;Themes\**" />
     <EmbeddedResource Remove="Plugins\**;Themes\**" />
+    <EmbeddedResource Remove="Themes\DefaultClean\**" />
     <None Remove="Plugins\**;Themes\**" />
+    <None Remove="Themes\DefaultClean\**" />
     <None Include="Plugins\**" CopyToPublishDirectory="PreserveNewest" Exclude="Plugins\**\runtimes\**;Plugins\**\ref\**;Plugins\**\*.pdb" />
 
     <Content Include="Themes\**" CopyToPublishDirectory="PreserveNewest" CopyToOutputDirectory="Never" />
 
     <!-- We copy the \Logs directory -->
     <Content Include="Logs\**" CopyToPublishDirectory="PreserveNewest" />
+    <Content Remove="Themes\DefaultClean\Content\css\print.css" />
+    <Content Remove="Themes\DefaultClean\Content\css\styles.css" />
+    <Content Remove="Themes\DefaultClean\Content\css\styles.rtl.css" />
+    <Content Remove="Themes\DefaultClean\Content\images\ajax-loader-small.gif" />
+    <Content Remove="Themes\DefaultClean\Content\images\back-button.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\calendar-next.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\calendar-prev.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\close.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\compare-button.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\details.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\discontinued-product-icon.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\download-button.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\edit.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\edit_.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\email-button.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\eye-closed.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\eye.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\first.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\ie_warning.jpg" />
+    <Content Remove="Themes\DefaultClean\Content\images\last.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\loading.gif" />
+    <Content Remove="Themes\DefaultClean\Content\images\logo.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\menu-icon.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\move.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\new.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\next.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\pointer.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\prev.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\rating1.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\rating2.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\remove.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\remove_.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\reply.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\retry.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\return.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\rss.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\shipping.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\shopping-bag.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\social-sprite.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\subscribe-button.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\toggle-black.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\toggle-gray.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\toggle-white.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\topic-type1.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\topic-type2.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\topic-type3.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\view-grid.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\view-list.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\vote-down-selected.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\vote-down.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\vote-up-selected.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\vote-up.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\watch.png" />
+    <Content Remove="Themes\DefaultClean\Content\images\wishlist-button.png" />
+    <Content Remove="Themes\DefaultClean\preview.jpg" />
+    <Content Remove="Themes\DefaultClean\theme.json" />
+    <Content Remove="Themes\DefaultClean\Views\Shared\Head.cshtml" />
+    <Content Remove="Themes\DefaultClean\Views\_ViewImports.cshtml" />
     <Content Remove="Themes\DifferenzTheme\Views\Product\ProductTemplate.Simple.cshtml" />
 
     <None Update="Areas\Admin\sitemap.config">
