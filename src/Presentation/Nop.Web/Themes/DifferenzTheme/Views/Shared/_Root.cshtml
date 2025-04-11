@@ -39,6 +39,8 @@
 </div>
 @await Component.InvokeAsync("EuCookieLaw")
 
+@await Html.PartialAsync("_CustomCookieConsentPopoup")@* HOHOImprove *@
+
 @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.BodyEndHtmlTagBefore })
 
 

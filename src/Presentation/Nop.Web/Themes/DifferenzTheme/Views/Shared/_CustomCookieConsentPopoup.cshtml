@@ -1,0 +1,105 @@
+﻿@* !!! It is improtant to understand that it doesn't correspond to the EU Low.
+But we work for clients from Georgia so, it is create only to cover requirements of Google Tag Manager for consent mode.
+SO, in case of changing Law in Georgia, it makes sence to remove that logic
+and connect a CPM solution like CookieYes or CookieBot etc... *@
+
+
+
+
+<script asp-location="Head">
+    //this function allow to have access to dataLayer earlier that GTM is fully loaded.
+    function gtag(){ dataLayer.push(arguments); }
+
+    // Function to send consent to Google Tag Manager
+    function setConsent(action, status){
+        if (typeof gtag === 'function') {
+            gtag('consent', action, {
+                'ad_storage'            : status,
+                'analytics_storage'     : status,
+                'ad_user_data'          : status,
+                'ad_personalization'    : status,
+                'personalization_storage': status,
+                'functionality_storage' : 'granted', //Могут быть установлены как granted без согласия пользователя
+                'security_storage'      : 'granted'  //Могут быть установлены как granted без согласия пользователя
+            });
+        } else {
+            console.log("gtag function is not declarated");
+        }
+    }
+
+    (function() {
+        window.dataLayer = window.dataLayer || [];
+
+        function onGTMReady(callback) {
+            // if event already was before script was loaded
+            for (let i = 0; i < dataLayer.length; i++) {
+                if (dataLayer[i].event === 'gtm.js') {
+                    callback();
+                    return;
+                }
+            }
+
+            // if event wasn't triggered yet - wrap push and listen to
+            const originalPush = dataLayer.push;
+            dataLayer.push = function () {
+                for (let i = 0; i < arguments.length; i++) {
+                    const arg = arguments[i];
+                    if (arg.event === 'gtm.js') {
+                        callback();
+                    }
+                }
+                return originalPush.apply(dataLayer, arguments);
+            };
+        }
+
+        onGTMReady(function() {
+            // Check consent information through cookies or localStorage
+            var userConsent = localStorage.getItem('userConsent'); // Example using localStorage
+
+            // If consent was granted, update the Google Tag Manager accordingly
+            if (userConsent === 'granted') {
+                setConsent('update','granted');
+            } else {
+                // If consent was denied or didn't set at all set defaul values to 'denied'
+                setConsent('default','denied');
+            }
+        });
+    })();
+
+</script>
+
+
+<script asp-location="Footer">
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check consent information through cookies or localStorage
+        var userConsent = localStorage.getItem('userConsent'); // Example using localStorage
+
+        if (userConsent === 'denied' || userConsent === undefined) {
+            // If there is no consent information, show the popup
+            document.getElementById('eu-cookie-bar-notification').style.display = 'block';
+        }
+
+        // Event handler for the consent button
+        document.getElementById('eu-cookie-ok').addEventListener('click', function() {
+            // Store the consent in localStorage
+            localStorage.setItem('userConsent', 'granted');
+
+            // Close the popup
+            document.getElementById('eu-cookie-bar-notification').style.display = 'none';
+
+            // Update Google Tag Manager with the granted consent
+            setConsent('update','granted');
+        });
+    });
+</script>
+
+
+<div id="eu-cookie-bar-notification" class="eu-cookie-bar-notification" style="display: none;">
+    <div class="content">
+        <div class="text">@T("EUCookieLaw.Description2")</div>
+        <div class="buttons-more">
+            <button type="button" class="ok-button button-1" id="eu-cookie-ok">@T("Common.OK")</button>
+            <a class="learn-more" href="@Url.RouteTopicUrl("privacyinfo")">@T("EUCookieLaw.LearnMore")</a>
+        </div>
+    </div>
+</div>
