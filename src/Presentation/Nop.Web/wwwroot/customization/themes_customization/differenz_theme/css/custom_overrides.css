@@ -636,6 +636,46 @@ input[type="checkbox"]:checked:after {
   display: none;
 }
 
+.eu-cookie-bar-notification2 {
+  display: none;
+  position: fixed;
+  bottom: 1rem;
+  left: 0px;
+  right: 0px;
+  z-index: 9999;
+  margin-inline: 16px;
+}
+
+  .eu-cookie-bar-notification2 .content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+    padding: 30px;
+    margin-inline: auto;
+    background-color: var(--color-1);
+    max-width: 858px;
+    color: var(--color-white);
+    line-height: 16px;
+    backdrop-filter: blur(4px);
+    border-radius: var(--radius-3);
+  }
+
+    .eu-cookie-bar-notification2 .content h2 {
+      color: var(--color-white);
+      margin-bottom: 10px;
+    }
+
+    .eu-cookie-bar-notification2 .content a{
+        color: var(--color-7);
+    }
+
+
+    .eu-cookie-bar-notification2 .content button {
+      color: var(--color-1);
+      background-color: var(--color-white);
+    }
+
 /*-----------Product item---------------*/
 .owl-carousel .owl-item img {
   width: 100%;
@@ -1523,10 +1563,10 @@ button.small-btn.product-box-add-to-cart-button.add-cart {
   line-height: 23px;
 }
 
-.vendor-contacts .icon{
-    width: 1.5rem;
-    height: 1.5rem;
-    object-fit: contain;
+.vendor-contacts .icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  object-fit: contain;
 }
 
 .vendor-contacts ul.contacts {
@@ -1539,41 +1579,41 @@ button.small-btn.product-box-add-to-cart-button.add-cart {
   flex-direction: row;
 }
 
-.vendor-contacts li{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    gap: 10px;
-    align-items: center;
-    padding: 0.5rem 0;
+.vendor-contacts li {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 10px;
+  align-items: center;
+  padding: 0.5rem 0;
 }
 
-.vendor-contacts .links .social-share{
-    border: unset;
+.vendor-contacts .links .social-share {
+  border: unset;
 }
 
-  .vendor-contacts .links .social-share>img{
-      width: 2rem;
-      height: 2rem;
+  .vendor-contacts .links .social-share > img {
+    width: 2rem;
+    height: 2rem;
   }
 
-  /*-----END------Hoho simple Product Page---------------*/
-  /*-----------Review block---------------*/
-  .review-container,
-  .review-item,
-  .review-item-content {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    line-height: 23px;
-  }
+/*-----END------Hoho simple Product Page---------------*/
+/*-----------Review block---------------*/
+.review-container,
+.review-item,
+.review-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  line-height: 23px;
+}
 
 .review-container {
   gap: 40px;
 }
 
-.product-description .review-container>button{
-    align-self: center;
+.product-description .review-container > button {
+  align-self: center;
 }
 
 .review_intro {
@@ -2258,6 +2298,10 @@ body .wishlist-content .email-a-friend-wishlist-button,
 
   .title-content button {
     display: none;
+  }
+
+  .eu-cookie-bar-notification2 .content{
+      flex-direction: column;
   }
 }
 
