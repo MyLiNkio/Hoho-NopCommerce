@@ -43,48 +43,10 @@ namespace Nop.Services.Messages;
 public partial class MessageTokenProviderOverridden : MessageTokenProvider, IMessageTokenProvider
 {
     #region Fields
-
-    protected readonly CatalogSettings _catalogSettings;
-    protected readonly CurrencySettings _currencySettings;
-    protected readonly IActionContextAccessor _actionContextAccessor;
-    protected readonly IAddressService _addressService;
-    protected readonly IAttributeFormatter<AddressAttribute, AddressAttributeValue> _addressAttributeFormatter;
-    protected readonly IAttributeFormatter<CustomerAttribute, CustomerAttributeValue> _customerAttributeFormatter;
-    protected readonly IAttributeFormatter<VendorAttribute, VendorAttributeValue> _vendorAttributeFormatter;
-    protected readonly IBlogService _blogService;
-    protected readonly ICountryService _countryService;
-    protected readonly ICurrencyService _currencyService;
-    protected readonly ICustomerService _customerService;
-    protected readonly IDateTimeHelper _dateTimeHelper;
-    protected readonly IEventPublisher _eventPublisher;
-    protected readonly IGenericAttributeService _genericAttributeService;
-    protected readonly IGiftCardService _giftCardService;
-    protected readonly IHtmlFormatter _htmlFormatter;
-    protected readonly ILanguageService _languageService;
-    protected readonly ILocalizationService _localizationService;
-    protected readonly Logging.ILogger _logger;
-    protected readonly INewsService _newsService;
-    protected readonly IOrderService _orderService;
-    protected readonly IPaymentPluginManager _paymentPluginManager;
-    protected readonly IPaymentService _paymentService;
-    protected readonly IPriceFormatter _priceFormatter;
-    protected readonly IProductService _productService;
-    protected readonly IRewardPointService _rewardPointService;
-    protected readonly IShipmentService _shipmentService;
-    protected readonly IStateProvinceService _stateProvinceService;
-    protected readonly IStoreContext _storeContext;
-    protected readonly IStoreService _storeService;
-    protected readonly IUrlHelperFactory _urlHelperFactory;
-    protected readonly IUrlRecordService _urlRecordService;
-    protected readonly IWorkContext _workContext;
-    protected readonly MessageTemplatesSettings _templatesSettings;
-    protected readonly PaymentSettings _paymentSettings;
-    protected readonly StoreInformationSettings _storeInformationSettings;
-    protected readonly TaxSettings _taxSettings;
+    
     #endregion
 
     #region Ctor
-
     public MessageTokenProviderOverridden(CatalogSettings catalogSettings,
         CurrencySettings currencySettings,
         IActionContextAccessor actionContextAccessor,
@@ -161,42 +123,6 @@ public partial class MessageTokenProviderOverridden : MessageTokenProvider, IMes
         storeInformationSettings,
         taxSettings)
     {
-        _catalogSettings = catalogSettings;
-        _currencySettings = currencySettings;
-        _actionContextAccessor = actionContextAccessor;
-        _addressAttributeFormatter = addressAttributeFormatter;
-        _addressService = addressService;
-        _blogService = blogService;
-        _countryService = countryService;
-        _currencyService = currencyService;
-        _customerAttributeFormatter = customerAttributeFormatter;
-        _customerService = customerService;
-        _dateTimeHelper = dateTimeHelper;
-        _eventPublisher = eventPublisher;
-        _genericAttributeService = genericAttributeService;
-        _giftCardService = giftCardService;
-        _htmlFormatter = htmlFormatter;
-        _languageService = languageService;
-        _localizationService = localizationService;
-        _newsService = newsService;
-        _orderService = orderService;
-        _paymentPluginManager = paymentPluginManager;
-        _paymentService = paymentService;
-        _priceFormatter = priceFormatter;
-        _productService = productService;
-        _rewardPointService = rewardPointService;
-        _shipmentService = shipmentService;
-        _stateProvinceService = stateProvinceService;
-        _storeContext = storeContext;
-        _storeService = storeService;
-        _urlHelperFactory = urlHelperFactory;
-        _urlRecordService = urlRecordService;
-        _vendorAttributeFormatter = vendorAttributeFormatter;
-        _workContext = workContext;
-        _templatesSettings = templatesSettings;
-        _paymentSettings = paymentSettings;
-        _storeInformationSettings = storeInformationSettings;
-        _taxSettings = taxSettings;
     }
 
     #endregion
