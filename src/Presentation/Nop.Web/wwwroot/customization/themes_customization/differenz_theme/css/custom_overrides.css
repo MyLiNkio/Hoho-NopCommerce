@@ -637,7 +637,6 @@ input[type="checkbox"]:checked:after {
 }
 
 .eu-cookie-bar-notification2 {
-  display: none;
   position: fixed;
   bottom: 1rem;
   left: 0px;
