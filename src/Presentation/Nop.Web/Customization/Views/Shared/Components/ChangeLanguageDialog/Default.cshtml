@@ -1,0 +1,31 @@
+﻿
+<div class="language-overlay" id="languageModal">
+    <div class="language-modal">
+        <div>
+            <p>თქვენ ათვალიერებთ ვებსაიტს ინგლისურად. გსურთ გადართვა ქართულზე?</p>
+            <p class="en">You're browsing in English. Want to switch to Georgian?</p>
+        </div>
+        <div class="modal-buttons">
+            <button class="btn-yes" onclick="switchToGeorgian()">
+                დიახ<span class="arrow">→</span><img src="/images/flags/ge_n.png" alt="Georgian Flag" class="flag-icon" />
+            </button>
+
+            <button class="btn-no" onclick="closeLanguageModal()">
+                No, stay on <img src="/images/flags/en_n.png" alt="UK Flag" class="flag-icon" />
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchToGeorgian() {
+        const url = window.location.href;
+        const newUrl = url.replace("/en/", "/ka/");
+        window.location.href = newUrl;
+    }
+
+    function closeLanguageModal() {
+        const modal = document.getElementById("languageModal");
+        if (modal) modal.style.display = "none";
+    }
+</script>

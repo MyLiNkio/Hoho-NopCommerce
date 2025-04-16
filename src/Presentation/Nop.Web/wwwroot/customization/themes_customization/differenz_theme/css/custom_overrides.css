@@ -636,6 +636,102 @@ input[type="checkbox"]:checked:after {
   display: none;
 }
 
+/*----- Choose language Model dialog ------*/
+
+.language-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 10000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.language-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: var(--color-white);
+  padding: 2rem;
+  width: 95%;
+  max-width: 420px;
+  border-radius: var(--radius-3);
+  text-align: center;
+}
+
+  .language-modal p {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+    .language-modal p.en {
+      font-size: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+  .modal-buttons button {
+    flex: 1;
+    padding: 0.8rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: background 0.3s ease;
+    white-space: nowrap;
+  }
+
+.btn-yes {
+  /*background-color: var(--color-6);
+  border: 1px solid var(--color-6);
+  color: var(--color-white);
+  height: 46px;*/
+  background-color: var(--color-white);
+  border: 1px solid var(--color-6);
+  color: var(--color-1);
+  height: 46px;
+}
+
+  .btn-yes:hover {
+    /*background-color: var(--color-white);
+    border: 1px solid var(--color-6);
+    color: var(--color-1);*/
+    background-color: var(--color-6);
+    color: var(--color-white);
+  }
+
+.btn-no {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-6);
+  color: var(--color-1);
+  height: 46px;
+}
+
+  .btn-no:hover {
+    background-color: var(--color-6);
+    color: var(--color-white);
+  }
+
+.modal-buttons img.flag-icon {
+  width: auto;
+  height: 20px;
+  border: 1px solid var(--color-6);
+}
+
+.arrow {
+  font-size: 1rem;
+}
+/*----- Choose language Model dialog ---END---*/
+
+
 .eu-cookie-bar-notification2 {
   position: fixed;
   bottom: 1rem;
