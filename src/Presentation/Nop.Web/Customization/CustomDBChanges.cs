@@ -170,6 +170,7 @@ namespace Nop.Web.Customization
                 ["enums.nop.core.domain.catalog.producttype.ApplyToMulticertificate"] = "Apply to Multicertificate",
                 ["admin.product.producttype.none"] = "None",
 
+                ["EUCookieLaw.OK"] = "Understood",
             });
 
 
@@ -331,6 +332,7 @@ namespace Nop.Web.Customization
                 ["enums.nop.core.domain.catalog.producttype.ApplyToMulticertificate"] = "დაამატეთ მულტისერტიფიკატი",
                 ["admin.product.producttype.none"] = "არცერთი",
 
+                ["EUCookieLaw.OK"] = "გასაგებია",
             });
         }
     }
