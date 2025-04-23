@@ -1,0 +1,15 @@
+﻿@using Nop.Web.Factories
+@inject ITopicModelFactory _topicModelFactory
+
+@{
+    var systemName = "DeliveryInfo_Block";
+
+    var model = await _topicModelFactory.PrepareTopicModelBySystemNameAsync(systemName);
+    if (model == null)
+        return;
+
+    var themeName = await themeContext.GetWorkingThemeNameAsync();
+    NopHtml.AppendCssFileParts($"~/Themes/{themeName}/Content/css/delivery_info_block.css");
+}
+
+@Html.Raw(model.Body)

@@ -54,7 +54,9 @@
             @await Component.InvokeAsync("HomepageCategories")
         </div> *@
 
-        
+        <div class="container mt-50px category-grid home-page-category-grid">
+            @await Html.PartialAsync("~/Customization/Views/Shared/_DeliveryInfoBlock.cshtml")
+        </div>
 
         <div class="container mt-50px category-grid home-page-category-grid">
             @await Html.PartialAsync("~/Customization/Views/Shared/_AboutUsBlock.cshtml")
