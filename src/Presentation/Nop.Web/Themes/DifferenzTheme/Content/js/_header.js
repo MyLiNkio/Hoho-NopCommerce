@@ -21,7 +21,7 @@
       0: {
         items: 1,
         margin: 5,
-        stagePadding: 20,
+        stagePadding: 60,
       },
       500: {
         items: 2,
@@ -33,7 +33,7 @@
         stagePadding: 100,
       },
       1200: {
-        items: 3,
+        items: 4,
         stagePadding: 100,
       }
     },

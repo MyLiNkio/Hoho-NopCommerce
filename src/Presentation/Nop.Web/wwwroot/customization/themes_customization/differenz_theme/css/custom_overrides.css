@@ -252,7 +252,8 @@ select {
 }
 
 .product-item__btns {
-  margin-top: 15px;
+  margin-top: 10px;
+  padding: 4px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -260,16 +261,22 @@ select {
 
   .product-item__btns button {
     flex-grow: 1;
+    height: 44px;
   }
 
-.product-wrapper .prices {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  text-align: left;
-  color: var(--color-primary);
-  font-size: 20px;
-}
+  .product-item__btns span{
+      font-size: 16px;
+      text-align: center;
+  }
+
+  .product-wrapper .prices {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    text-align: left;
+    color: var(--color-primary);
+    font-size: 20px;
+  }
 
 .prices .the-old-price {
   color: #aaa;
@@ -301,7 +308,7 @@ select {
   }
 
 .product-wrapper.item-box {
-  padding: 12px;
+  padding: 8px;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -310,6 +317,14 @@ select {
 
 .related-products-grid {
   margin-top: 50px;
+}
+
+.pager li{
+    margin: 2px;
+}
+
+.pager li a, .pager li span {
+  border-radius: var(--radius-1);
 }
 
 .footer-block .title {
@@ -800,11 +815,11 @@ input[type="checkbox"]:checked:after {
 
 .product-wrapper h5 {
   color: var(--color-grey);
-  font-size: 20px;
+  font-size: 18px;
   margin: 5px 0;
   line-height: 25px;
   -webkit-line-clamp: 2;
-  min-height: 50px;
+  /*min-height: 50px;*/
   /*min-height: unset;*/
 }
 
@@ -847,7 +862,8 @@ input[type="checkbox"]:checked:after {
 }
 
 .item-box .sku {
-  margin: 5px 0 0px;
+  /*margin: 5px 0 0px;*/
+  margin: 0;
   text-align: right;
 }
 
@@ -867,6 +883,7 @@ p.desc-pro {
   -webkit-line-clamp: 3;
   min-height: 75px;
   line-height: 25px;
+  margin: 0;
 }
 
 .price-all {
@@ -888,7 +905,7 @@ p.desc-pro {
 }
 
 button.small-btn.product-box-add-to-cart-button.add-cart {
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .gallery .picture-thumbs .thumb-item {
@@ -1347,8 +1364,8 @@ button.small-btn.product-box-add-to-cart-button.add-cart {
 
 .item-box .product_wish_btn {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 14px;
+  right: 14px;
   width: 40px !important;
   height: 40px !important;
   border-radius: var(--radius-1);
@@ -2346,6 +2363,18 @@ body .wishlist-content .email-a-friend-wishlist-button,
     .review_intro > button {
       align-self: center;
     }
+
+  .home-page-category-grid .product-grid {
+    margin-top: -30px;
+  }
+
+  .owl-carousel.owl-carousel2 .owl-nav{
+      margin-top: 5px;
+  }
+
+  .owl-carousel2 .owl-dots{
+      margin-top: 20px;
+  }
 }
 
 @media (max-width: 576px) {
