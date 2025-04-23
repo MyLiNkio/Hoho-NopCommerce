@@ -5,16 +5,14 @@
   gap: 10px;
   font-size: 1.25em;
   line-height: 1.5;
-  /* display: flex; */
-  /* flex-wrap: wrap;
-  justify-content: space-between; */
+  justify-items: center;
 }
 
 .deliveryinfo_item {
   min-width: 210px;
   max-width: 260px;
   width: 100%;
-  padding: 40px 20px;
+  padding: 40px 10px;
   display: flex;
   flex-direction: column;
   text-align: start;
